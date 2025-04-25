@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Pending Fixed Deposit Approvals</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Pending Fixed Deposit Approvals</h1>
+
+    <div th:if="${#lists.isEmpty(fds)}" class="alert alert-info">
+        No Fixed Deposits are currently pending approval.
+    </div>
+
+    <table class="table table-striped" th:unless="${#lists.isEmpty(fds)}">
+        <thead>
+        <tr>
+            <th>FD ID</th>
+            <th>Customer Name</th>
+            <th>Principal Amount</th>
+            <th>Term (Months)</th>
+            <th>Interest Rate (%)</th>
+            <th>Requested On</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="fd : ${fds}">
+            <td th:text="${fd.id}">1</td>
+            <td th:text="${fd.customerName}">Jane Doe</td>
+            <td th:text="${#numbers.formatCurrency(fd.principalAmount)}">5000.00</td>
+            <td th:text="${fd.termMonths}">6</td>
+            <td th:text="${fd.interestRate}">5.0</td>
+            <td th:text="${#temporals.format(fd.requestedAt, 'yyyy-MM-dd HH:mm')}">Timestamp</td>
+            <td>
+                <form th:action="@{/manager/fds/{id}/approve(id=${fd.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                </form>
+                <form th:action="@{/manager/fds/{id}/reject(id=${fd.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/manager/dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+</body>
+</html>

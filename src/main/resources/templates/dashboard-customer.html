@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Customer Dashboard</title>
+    <th:block layout:fragment="head-extra"></th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Customer Dashboard</h1>
+    <p>Welcome, <span th:text="${customer != null ? customer.name : principal.username}">Customer</span>!</p>
+
+    <!-- Display error message from controller if loading failed -->
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+    <!-- Warning if customer profile exists but is not active -->
+    <div th:if="${customer != null and !customer.active}" class="alert alert-warning">
+        Your profile requires an approved bank account to access all features like applying for loans/FDs or viewing account details.
+        Please wait for account approval or contact the bank.
+    </div>
+
+    <!-- Only show financial sections if customer profile exists -->
+    <div th:if="${customer != null}">
+
+        <!-- Accounts Section -->
+        <div class="card">
+            <div class="card-header">Your Accounts</div>
+            <div class="card-body">
+                <div th:if="${accounts == null or #lists.isEmpty(accounts)}">
+                    You currently have no active accounts.
+                </div>
+                <ul th:unless="${accounts == null or #lists.isEmpty(accounts)}">
+                    <li th:each="account : ${accounts}">
+                        <a th:href="@{/customer/account/{id}(id=${account.id})}">
+                            <span th:text="${account.accountType}">Type</span> -
+                            <span th:text="${account.accountNumber}">Number</span>:
+                            Balance: <span th:text="${#numbers.formatCurrency(account.balance)}"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ======================= Loans Section Start ======================= -->
+        <div class="card">
+            <div class="card-header">Your Loans</div>
+            <div class="card-body">
+                <div th:if="${loans == null or #lists.isEmpty(loans)}">
+                    You have no loan applications or active loans.
+                    <a th:if="${customer.active}" th:href="@{/customer/apply-loan}" class="btn btn-sm btn-primary" style="margin-left: 10px;">Apply Now</a>
+                </div>
+                <table class="table table-sm table-striped" th:unless="${loans == null or #lists.isEmpty(loans)}">
+                    <thead>
+                    <tr>
+                        <th>Loan ID</th>
+                        <th>Amount</th>
+                        <th>Term</th>
+                        <th>Rate (%)</th>
+                        <th>Requested On</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="loan : ${loans}">
+                        <td th:text="${loan.id}">L1</td>
+                        <td th:text="${#numbers.formatCurrency(loan.loanAmount)}">1000</td>
+                        <td th:text="${loan.termMonths + ' months'}">12 months</td>
+                        <td th:text="${loan.interestRate}">8.5</td>
+                        <td th:text="${#temporals.format(loan.requestedAt, 'yyyy-MM-dd')}">Date</td>
+                        <td>
+                            <!-- Use badges for status -->
+                            <span th:switch="${loan.status?.name()}" class="badge">
+                                    <span th:case="'PENDING'" class="bg-warning text-dark">Pending</span>
+                                    <span th:case="'APPROVED'" class="bg-success">Approved</span> <!-- Or ACTIVE -->
+                                    <span th:case="'ACTIVE'" class="bg-success">Active</span>
+                                    <span th:case="'REJECTED'" class="bg-danger">Rejected</span>
+                                    <span th:case="'CLOSED'" class="bg-secondary">Closed</span>
+                                    <span th:case="*" class="bg-secondary" th:text="${loan.status}">Unknown</span>
+                                </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a th:if="${customer.active}" th:href="@{/customer/apply-loan}" class="btn btn-sm btn-primary mt-2">Apply for Another Loan</a>
+            </div>
+        </div>
+        <!-- ======================= Loans Section End ========================= -->
+
+        <!-- ======================= Fixed Deposits Section Start ======================= -->
+        <div class="card">
+            <div class="card-header">Your Fixed Deposits</div>
+            <div class="card-body">
+                <div th:if="${fixedDeposits == null or #lists.isEmpty(fixedDeposits)}">
+                    You have no fixed deposit applications or active FDs.
+                    <a th:if="${customer.active}" th:href="@{/customer/apply-fd}" class="btn btn-sm btn-primary" style="margin-left: 10px;">Apply Now</a>
+                </div>
+                <table class="table table-sm table-striped" th:unless="${fixedDeposits == null or #lists.isEmpty(fixedDeposits)}">
+                    <thead>
+                    <tr>
+                        <th>FD ID</th>
+                        <th>Amount</th>
+                        <th>Term</th>
+                        <th>Rate (%)</th>
+                        <th>Requested On</th>
+                        <th>Maturity Date</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="fd : ${fixedDeposits}">
+                        <td th:text="${fd.id}">FD1</td>
+                        <td th:text="${#numbers.formatCurrency(fd.principalAmount)}">5000</td>
+                        <td th:text="${fd.termMonths + ' months'}">6 months</td>
+                        <td th:text="${fd.interestRate}">5.0</td>
+                        <td th:text="${#temporals.format(fd.requestedAt, 'yyyy-MM-dd')}">Date</td>
+                        <td th:text="${fd.maturityDate != null ? #temporals.format(fd.maturityDate, 'yyyy-MM-dd') : '-'}">Maturity</td>
+                        <td>
+                            <!-- Use badges for status -->
+                            <span th:switch="${fd.status?.name()}" class="badge">
+                                    <span th:case="'PENDING'" class="bg-warning text-dark">Pending</span>
+                                    <span th:case="'APPROVED'" class="bg-info">Approved</span> <!-- Approved but maybe not started? -->
+                                    <span th:case="'ACTIVE'" class="bg-success">Active</span>
+                                    <span th:case="'REJECTED'" class="bg-danger">Rejected</span>
+                                    <span th:case="'CLOSED'" class="bg-secondary">Matured/Closed</span>
+                                    <span th:case="*" class="bg-secondary" th:text="${fd.status}">Unknown</span>
+                                </span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a th:if="${customer.active}" th:href="@{/customer/apply-fd}" class="btn btn-sm btn-primary mt-2">Apply for Another FD</a>
+            </div>
+        </div>
+        <!-- ======================= Fixed Deposits Section End ======================= -->
+
+        <!-- ======================= Grievances Section Start ======================= -->
+        <div class="card">
+            <div class="card-header">Your Grievances</div>
+            <div class="card-body">
+                <div th:if="${grievances == null or #lists.isEmpty(grievances)}">
+                    You have not filed any grievances.
+                    <a th:href="@{/customer/file-grievance}" class="btn btn-sm btn-warning" style="margin-left: 10px;">File Now</a>
+                </div>
+                <table class="table table-sm table-striped" th:unless="${grievances == null or #lists.isEmpty(grievances)}">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Subject</th>
+                        <th>Submitted</th>
+                        <th>Status</th>
+                        <th>Resolved</th>
+                        <th>Handled By</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="grievance : ${grievances}">
+                        <td th:text="${grievance.id}">G1</td>
+                        <td th:text="${grievance.subject}">Subject</td>
+                        <td th:text="${#temporals.format(grievance.submittedDate, 'yyyy-MM-dd')}">Date</td>
+                        <td>
+                            <!-- Status Badge: PENDING means Open, APPROVED means Resolved -->
+                            <span th:switch="${grievance.status?.name()}" class="badge">
+                                    <span th:case="'PENDING'" class="bg-warning text-dark">Pending</span>
+                                    <span th:case="'APPROVED'" class="bg-success">Resolved</span>
+                                    <span th:case="*" class="bg-secondary" th:text="${grievance.status}">Unknown</span>
+                                </span>
+                        </td>
+                        <td th:text="${grievance.resolvedDate != null ? #temporals.format(grievance.resolvedDate, 'yyyy-MM-dd') : '-'}">Resolved Date</td>
+                        <td th:text="${grievance.handledByUsername ?: '-'}">Staff/Manager</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a th:href="@{/customer/file-grievance}" class="btn btn-sm btn-warning mt-2">File New Grievance</a>
+            </div>
+        </div>
+        <!-- ======================= Grievances Section End ========================= -->
+
+        <!-- Services Section (Only enable apply buttons if customer is active) -->
+        <div class="card">
+            <div class="card-header">Services</div>
+            <div class="card-body">
+                <a th:if="${customer.active}" th:href="@{/customer/apply-loan}" class="btn btn-primary">Apply for Loan</a>
+                <a th:if="${customer.active}" th:href="@{/customer/apply-fd}" class="btn btn-primary">Apply for Fixed Deposit</a>
+                <a th:unless="${customer.active}" href="#" class="btn btn-primary disabled" title="Account must be active">Apply for Loan</a>
+                <a th:unless="${customer.active}" href="#" class="btn btn-primary disabled" title="Account must be active">Apply for Fixed Deposit</a>
+
+                <a th:href="@{/customer/file-grievance}" class="btn btn-warning">File a Grievance</a>
+                <a th:href="@{/customer/profile/update}" class="btn btn-secondary">Request Profile Update</a>
+            </div>
+        </div>
+
+    </div> <!-- End of th:if customer != null -->
+
+</div>
+<th:block layout:fragment="scripts-extra"></th:block>
+</body>
+</html>

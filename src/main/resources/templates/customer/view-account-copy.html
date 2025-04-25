@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Account Details</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Account Details</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">Account Summary</div>
+        <div class="card-body">
+            <p><strong>Account Number:</strong> <span th:text="${account.accountNumber}">1234567890</span></p>
+            <p><strong>Account Type:</strong> <span th:text="${account.accountType}">SAVINGS</span></p>
+            <p><strong>Current Balance:</strong> <span th:text="${#numbers.formatCurrency(account.balance)}">$1,234.56</span></p>
+            <p><strong>Status:</strong> <span th:text="${account.status}">ACTIVE</span></p>
+            <p><strong>Opened On:</strong> <span th:text="${#temporals.format(account.createdAt, 'yyyy-MM-dd')}">2023-01-15</span></p>
+            <p th:if="${account.approvedAt}"><strong>Approved On:</strong> <span th:text="${#temporals.format(account.approvedAt, 'yyyy-MM-dd HH:mm')}">2023-01-16 10:30</span></p>
+        </div>
+    </div>
+
+    <h2>Recent Transactions</h2>
+    <div th:if="${#lists.isEmpty(transactions)}" class="alert alert-info">
+        No transactions found for this account.
+    </div>
+
+    <table class="table table-striped" th:unless="${#lists.isEmpty(transactions)}">
+        <thead>
+        <tr>
+            <th>Date & Time</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tx : ${transactions}">
+            <td th:text="${#temporals.format(tx.timestamp, 'yyyy-MM-dd HH:mm:ss')}">Timestamp</td>
+            <td th:text="${tx.transactionType}">DEPOSIT</td>
+            <td th:text="${#numbers.formatCurrency(tx.amount)}"
+                th:classappend="${tx.transactionType.name() == 'DEPOSIT' ? 'text-success' : (tx.transactionType.name() == 'WITHDRAWAL' ? 'text-danger' : '')}">
+                Amount
+            </td>
+            <td th:text="${tx.description}">Details</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/customer/dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+</body>
+</html>

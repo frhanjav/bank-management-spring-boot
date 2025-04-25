@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Open New Account</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Open New Account for <span th:text="${customer.name}">Customer</span></h1>
+    <p>Select the account type. This request will require Manager approval.</p>
+
+    <div class="card">
+        <div class="card-header">Account Details</div>
+        <div class="card-body">
+            <form th:action="@{/staff/open-account}" method="post">
+                <!-- Hidden field to pass customer ID -->
+                <input type="hidden" name="customerId" th:value="${customer.id}" />
+
+                <div class="form-group">
+                    <label for="customerName">Customer:</label>
+                    <input type="text" id="customerName" class="form-control" th:value="${customer.name}" disabled>
+                </div>
+
+                <div class="form-group">
+                    <label for="accountType">Account Type:</label>
+                    <select id="accountType" name="accountType" class="form-control" required>
+                        <option value="">-- Select Type --</option>
+                        <option th:each="type : ${accountTypes}"
+                                th:value="${type}"
+                                th:text="${type}">SAVINGS</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit for Approval</button>
+                <a th:href="@{/staff/customers}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

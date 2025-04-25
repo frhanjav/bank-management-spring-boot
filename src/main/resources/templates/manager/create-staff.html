@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Create New Staff</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Create New Staff User</h1>
+
+    <div class="card">
+        <div class="card-header">Staff Details</div>
+        <div class="card-body">
+            <form th:action="@{/manager/create-staff}" th:object="${userRequest}" method="post">
+                <div class="form-group">
+                    <label for="name">Full Name:</label>
+                    <input type="text" id="name" th:field="*{name}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="employeeId">Employee ID:</label>
+                    <input type="text" id="employeeId" th:field="*{employeeId}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" th:field="*{username}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Initial Password:</label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control" required>
+                </div>
+                <!-- Role is automatically set to STAFF in the backend -->
+                <button type="submit" class="btn btn-primary">Create Staff</button>
+                <a th:href="@{/manager/dashboard}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

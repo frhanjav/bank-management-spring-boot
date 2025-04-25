@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Staff Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Staff Dashboard</h1>
+    <p>Welcome, <span sec:authentication="principal.username">Staff Member</span>!</p>
+
+    <div class="card">
+        <div class="card-header">Customer & Account Management</div>
+        <div class="card-body">
+            <a th:href="@{/staff/customers}" class="btn btn-primary">Open New Account</a>
+            <a th:href="@{/staff/transactions}" class="btn btn-primary">Perform Transaction</a>
+            <!-- Add link to view/manage customer profile update requests -->
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Service Requests</div>
+        <div class="card-body">
+            <a th:href="@{/staff/grievances}" class="btn btn-info">Handle Grievances</a> (<span th:text="${pendingGrievanceCount}">0</span> pending)
+            <!-- Add links for FD management if staff handles maturity/closure -->
+        </div>
+    </div>
+
+    <!-- Add more dashboard widgets as needed -->
+
+</div>
+</body>
+</html>

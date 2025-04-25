@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!-- Add xmlns:layout namespace -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Use layout:title-pattern for combining titles -->
+    <!-- $LAYOUT_TITLE is 'Bank Management System', $CONTENT_TITLE comes from the content page's <title> -->
+    <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Bank Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- Use layout:fragment to mark placeholder for extra head content -->
+    <th:block layout:fragment="head-extra" />
+</head>
+<body>
+
+<!-- ======================= Navbar Start ======================= -->
+<!-- Navbar structure remains the same -->
+<nav class="navbar navbar-expand">
+    <div class="container navbar-container">
+        <a class="navbar-brand" th:href="@{/dashboard}">BankSys</a>
+        <div class="navbar-links">
+            <!-- Common Links -->
+            <a class="nav-link" th:href="@{/dashboard}" sec:authorize="isAuthenticated()">Dashboard</a>
+            <!-- Manager Links -->
+            <span sec:authorize="hasRole('MANAGER')">
+                <a class="nav-link" th:href="@{/manager/create-staff}">Create Staff</a>
+                <a class="nav-link" th:href="@{/manager/create-customer}">Create Customer</a>
+                <a class="nav-link" th:href="@{/manager/pending-accounts}">Pending Accounts</a>
+                <a class="nav-link" th:href="@{/manager/pending-loans}">Pending Loans</a>
+                <a class="nav-link" th:href="@{/manager/pending-fds}">Pending FDs</a>
+                <a class="nav-link" th:href="@{/manager/grievances}">View Grievances</a>
+
+            </span>
+            <!-- Staff Links -->
+            <span sec:authorize="hasRole('STAFF')">
+                 <a class="nav-link" th:href="@{/staff/customers}">Open Account</a>
+                 <a class="nav-link" th:href="@{/staff/transactions}">Transactions</a>
+                 <a class="nav-link" th:href="@{/staff/grievances}">Grievances</a>
+            </span>
+            <!-- Customer Links -->
+            <span sec:authorize="hasRole('CUSTOMER')">
+                 <a class="nav-link" th:href="@{/customer/apply-loan}">Apply Loan</a>
+                 <a class="nav-link" th:href="@{/customer/apply-fd}">Apply FD</a>
+                 <a class="nav-link" th:href="@{/customer/file-grievance}">File Grievance</a>
+                 <a class="nav-link" th:href="@{/customer/profile/update}">Update Profile</a>
+            </span>
+            <!-- Logout Section -->
+            <div class="navbar-logout" sec:authorize="isAuthenticated()">
+                <span class="user-greeting">Welcome, <span sec:authentication="name">User</span>!</span>
+                <form th:action="@{/logout}" method="post" style="display: inline; margin-left: 10px;">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+<!-- ======================= Navbar End ========================= -->
+
+<div class="container page-content">
+    <!-- Flash Messages (Keep as is) -->
+    <div th:if="${successMessage}" class="alert alert-success" role="alert" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+    <div th:if="${warningMessage}" class="alert alert-warning" role="alert" th:text="${warningMessage}"></div>
+    <div th:if="${infoMessage}" class="alert alert-info" role="alert" th:text="${infoMessage}"></div>
+
+    <!-- Main Content Area - Use layout:fragment to mark where content goes -->
+    <!-- The element itself (div) will be kept, its content replaced by the content page's fragment -->
+    <div layout:fragment="content">
+        <p>Default Layout Content (This should not be visible if layout is working)</p>
+    </div>
+</div>
+
+<footer>
+    <!-- Footer remains the same -->
+    <div class="container" style="text-align: center; margin-top: 30px; color: #666; font-size: 0.9em;">
+        © <span th:text="${#dates.year(#dates.createNow())}"></span> Bank Management System
+    </div>
+</footer>
+
+<!-- Use layout:fragment to mark placeholder for extra script content -->
+<th:block layout:fragment="scripts-extra" />
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Handle Pending Grievances</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Handle Pending Grievances</h1>
+
+    <div th:if="${#lists.isEmpty(grievances)}" class="alert alert-info">
+        No grievances are currently pending.
+    </div>
+
+    <table class="table table-striped" th:unless="${#lists.isEmpty(grievances)}">
+        <thead>
+        <tr>
+            <th>Grievance ID</th>
+            <th>Customer Name</th>
+            <th>Subject</th>
+            <th>Submitted On</th>
+            <th>Details</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="grievance : ${grievances}">
+            <td th:text="${grievance.id}">1</td>
+            <td th:text="${grievance.customerName}">John Doe</td>
+            <td th:text="${grievance.subject}">Issue Subject</td>
+            <td th:text="${#temporals.format(grievance.submittedDate, 'yyyy-MM-dd HH:mm')}">Timestamp</td>
+            <td>
+                <!-- Basic view, could add a modal or separate page for full description -->
+                <span th:text="${#strings.abbreviate(grievance.description, 50)}">Short description...</span>
+                <!-- <a href="#" class="btn btn-info btn-sm">View Full</a> -->
+            </td>
+            <td>
+                <form th:action="@{/staff/grievances/{id}/resolve(id=${grievance.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-success btn-sm">Mark as Resolved</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/staff/dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+</body>
+</html>

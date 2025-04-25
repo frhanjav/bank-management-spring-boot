@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"> <!-- Decorate using layout.html -->
+<head>
+    <!-- Simple title - will be combined by layout:title-pattern -->
+    <title>Manager Dashboard</title>
+    <!-- Define optional head-extra fragment -->
+    <th:block layout:fragment="head-extra">
+        <!-- <link ...> -->
+    </th:block>
+</head>
+<body>
+<!-- Define the main content fragment -->
+<div layout:fragment="content">
+    <h1>Manager Dashboard</h1>
+    <p>Welcome, <span sec:authentication="principal.username">Manager</span>!</p>
+
+    <div class="card">
+        <div class="card-header">Quick Actions</div>
+        <div class="card-body">
+            <a th:href="@{/manager/create-staff}" class="btn btn-primary">Create New Staff</a>
+            <a th:href="@{/manager/create-customer}" class="btn btn-primary">Create New Customer</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Pending Approvals</div>
+        <div class="card-body">
+            <ul>
+                <li><a th:href="@{/manager/pending-accounts}">Pending Account Approvals</a> (<span th:text="${pendingAccountCount}">0</span>)</li>
+                <li><a th:href="@{/manager/pending-loans}">Pending Loan Approvals</a> (<span th:text="${pendingLoanCount}">0</span>)</li>
+                <li><a th:href="@{/manager/pending-fds}">Pending Fixed Deposit Approvals</a> (<span th:text="${pendingFdCount}">0</span>)</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Define optional scripts-extra fragment -->
+<th:block layout:fragment="scripts-extra">
+    <!-- <script ...> -->
+</th:block>
+</body>
+</html>

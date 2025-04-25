@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Customer Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Customer Dashboard</h1>
+    <p>Welcome, <span th:text="${customer != null ? customer.name : principal.username}">Customer</span>!</p>
+
+    <div th:if="${customer != null and !customer.active}" class="alert alert-warning">
+        Your profile requires an approved bank account to access all features.
+        Please wait for account approval or contact the bank.
+    </div>
+
+    <div th:if="${#authorization.expression('isAuthenticated() and hasRole(''CUSTOMER'')')} and ${customer?.active}">
+        <div class="card">
+            <div class="card-header">Your Accounts</div>
+            <div class="card-body">
+                <div th:if="${accounts == null or #lists.isEmpty(accounts)}">
+                    You currently have no active accounts.
+                </div>
+                <ul th:unless="${accounts == null or #lists.isEmpty(accounts)}">
+                    <li th:each="account : ${accounts}">
+                        <a th:href="@{/customer/account/{id}(id=${account.id})}">
+                            <span th:text="${account.accountType}">Type</span> -
+                            <span th:text="${account.accountNumber}">Number</span>:
+                            Balance: <span th:text="${#numbers.formatCurrency(account.balance)}"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Services</div>
+            <div class="card-body">
+                <a th:href="@{/customer/apply-loan}" class="btn btn-primary">Apply for Loan</a>
+                <a th:href="@{/customer/apply-fd}" class="btn btn-primary">Apply for Fixed Deposit</a>
+                <a th:href="@{/customer/file-grievance}" class="btn btn-warning">File a Grievance</a>
+                <a th:href="@{/customer/profile/update}" class="btn btn-secondary">Request Profile Update</a>
+                <!-- TODO: Add links to view existing loans, FDs, grievances -->
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!-- This is a STANDALONE error page - NO layout decoration -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <!-- Link CSS directly as this page doesn't use the layout -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        /* Optional: Add specific styles for the error container if needed */
+        .error-container {
+            max-width: 700px;
+            margin-top: 50px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid #dc3545; /* Red border */
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .error-header {
+            background-color: #f8d7da; /* Light red background */
+            color: #721c24; /* Dark red text */
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f5c6cb;
+            font-weight: bold;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .error-body {
+            padding: 1.25rem;
+        }
+        .error-body p {
+            margin-bottom: 0.5rem;
+        }
+        .error-body code { /* Style for potential stack trace snippets */
+            background-color: #f1f1f1;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+<div class="container"> <!-- Use basic container for alignment -->
+    <div class="error-container">
+        <div class="error-header">
+            <!-- Display status and error type from the model -->
+            Error <span th:if="${status}" th:text="' - ' + ${status}"></span> : <span th:text="${error ?: 'Unexpected Error'}"></span>
+        </div>
+        <div class="error-body">
+            <p th:text="${message ?: 'An unexpected error occurred. Please contact support or try again later.'}">Error details not available.</p>
+            <!-- Display timestamp if available -->
+            <p th:if="${timestamp}">Timestamp: <span th:text="${#temporals.format(timestamp, 'yyyy-MM-dd HH:mm:ss')}"></span></p>
+            <!-- Display path if available -->
+            <p th:if="${path}">Path: <code th:text="${path}"></code></p>
+
+            <!-- Link back to a safe place - dashboard if possible, otherwise login -->
+            <div style="margin-top: 20px;">
+                <a th:href="@{/dashboard}" class="btn btn-primary btn-sm">Go to Dashboard</a>
+<!--                <a th:href="@{/login}" class="btn btn-secondary btn-sm">Go to Login</a>-->
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

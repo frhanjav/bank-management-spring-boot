@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Request Profile Update</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Request Profile Update</h1>
+    <p class="alert alert-info">Submit changes for review. Updates like PAN or Address may require verification by bank staff.</p>
+
+    <div class="card">
+        <div class="card-header">Your Information</div>
+        <div class="card-body">
+            <form th:action="@{/customer/profile/update}" th:object="${customer}" method="post">
+                <!-- Display non-editable fields -->
+                <div class="form-group">
+                    <label>Name:</label>
+                    <input type="text" class="form-control" th:value="*{name}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" class="form-control" th:value="*{email}" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Phone:</label>
+                    <input type="tel" class="form-control" th:value="*{phone}" disabled>
+                </div>
+
+                <hr/>
+                <h4>Editable Information (Submit for Review)</h4>
+
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <textarea id="address" th:field="*{address}" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="panNumber">PAN Number:</label>
+                    <input type="text" id="panNumber" th:field="*{panNumber}" class="form-control" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="Enter valid PAN (e.g., ABCDE1234F)">
+                    <small class="form-text text-muted">Format: ABCDE1234F</small>
+                </div>
+
+                <!-- Add other fields that customers can request updates for -->
+
+                <button type="submit" class="btn btn-primary">Submit Update Request</button>
+                <a th:href="@{/customer/dashboard}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

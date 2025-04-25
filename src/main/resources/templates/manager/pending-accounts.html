@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <!-- Check: Title is plain text -->
+    <title>Pending Account Approvals</title>
+    <!-- Check: layout:fragment for head-extra -->
+    <th:block layout:fragment="head-extra">
+        <!-- Check: No redundant CSS link here -->
+    </th:block>
+</head>
+<body>
+<!-- Check: layout:fragment for content -->
+<div layout:fragment="content">
+    <h1>Pending Account Approvals</h1>
+    <p>Review the account opening requests below and approve or reject them.</p>
+
+    <div th:if="${#lists.isEmpty(accounts)}" class="alert alert-info">
+        No accounts are currently pending approval.
+    </div>
+
+    <table class="table table-striped" th:unless="${#lists.isEmpty(accounts)}">
+        <!-- Table content... -->
+        <thead>
+        <tr>
+            <th>Account Number</th>
+            <th>Customer Name</th>
+            <th>Account Type</th>
+            <th>Requested On</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="account : ${accounts}">
+            <td th:text="${account.accountNumber}">1234567890</td>
+            <td th:text="${account.customerName}">John Doe</td>
+            <td th:text="${account.accountType}">SAVINGS</td>
+            <td th:text="${#temporals.format(account.createdAt, 'yyyy-MM-dd HH:mm')}">Timestamp</td>
+            <td>
+                <form th:action="@{/manager/accounts/{id}/approve(id=${account.id})}" method="post" style="display: inline; margin-right: 5px;">
+                    <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                </form>
+                <form th:action="@{/manager/accounts/{id}/reject(id=${account.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/manager/dashboard}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+</div>
+<!-- Check: layout:fragment for scripts-extra -->
+<th:block layout:fragment="scripts-extra">
+    <!-- No extra scripts needed for this page -->
+</th:block>
+</body>
+</html>

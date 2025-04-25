@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>File a Grievance</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>File a Grievance</h1>
+    <p>Please describe your issue clearly. It will be reviewed by bank staff.</p>
+
+    <div class="card">
+        <div class="card-header">Grievance Details</div>
+        <div class="card-body">
+            <form th:action="@{/customer/file-grievance}" method="post">
+                <div class="form-group">
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" name="subject" class="form-control" required maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" class="form-control" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-warning">Submit Grievance</button>
+                <a th:href="@{/customer/dashboard}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
