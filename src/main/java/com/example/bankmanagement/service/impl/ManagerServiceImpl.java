@@ -73,35 +73,6 @@ public class ManagerServiceImpl implements ManagerService {
         return userDto; // Return the created user DTO
     }
 
-    @Override
-    @Transactional
-    public UserDto createCustomerUser(CreateUserRequest request) {
-        request.setRole(Role.CUSTOMER);
-        if (request.getEmail() == null || request.getEmail().isBlank() ||
-                request.getPhone() == null || request.getPhone().isBlank() ||
-                request.getAddress() == null || request.getAddress().isBlank() ||
-                request.getName() == null || request.getName().isBlank()) {
-            throw new InvalidRequestException("Name, Email, Phone, and Address are required for Customer");
-        }
-
-        // Create the base user (will be disabled initially)
-        UserDto userDto = userService.createUser(request);
-        User user = userService.findUserById(userDto.getId());
-
-        // Create the customer profile (inactive initially)
-        Customer customer = new Customer();
-        customer.setName(request.getName());
-        customer.setEmail(request.getEmail());
-        customer.setPhone(request.getPhone());
-        customer.setAddress(request.getAddress());
-        customer.setPanNumber(request.getPanNumber()); // Optional
-        customer.setUser(user);
-        customer.setActive(false); // Customer is inactive until first account approval
-        customerRepository.save(customer);
-
-        return userDto;
-    }
-
     // --- Approval Methods ---
 
     @Override

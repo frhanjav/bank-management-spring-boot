@@ -21,12 +21,10 @@
     <div class="container navbar-container">
         <a class="navbar-brand" th:href="@{/dashboard}">BankSys</a>
         <div class="navbar-links">
-            <!-- Common Links -->
-            <a class="nav-link" th:href="@{/dashboard}" sec:authorize="isAuthenticated()">Dashboard</a>
+
             <!-- Manager Links -->
             <span sec:authorize="hasRole('MANAGER')">
                 <a class="nav-link" th:href="@{/manager/create-staff}">Create Staff</a>
-                <a class="nav-link" th:href="@{/manager/create-customer}">Create Customer</a>
                 <a class="nav-link" th:href="@{/manager/pending-accounts}">Pending Accounts</a>
                 <a class="nav-link" th:href="@{/manager/pending-loans}">Pending Loans</a>
                 <a class="nav-link" th:href="@{/manager/pending-fds}">Pending FDs</a>
@@ -35,7 +33,7 @@
             </span>
             <!-- Staff Links -->
             <span sec:authorize="hasRole('STAFF')">
-                 <a class="nav-link" th:href="@{/staff/customers}">Open Account</a>
+                 <a class="nav-link" th:href="@{/staff/create-customer-account}">Create Customer & Account</a>
                  <a class="nav-link" th:href="@{/staff/transactions}">Transactions</a>
                  <a class="nav-link" th:href="@{/staff/grievances}">Grievances</a>
             </span>

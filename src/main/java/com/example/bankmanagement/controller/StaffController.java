@@ -1,12 +1,8 @@
 package com.example.bankmanagement.controller;
 
-import com.example.bankmanagement.dto.AccountDto;
-import com.example.bankmanagement.dto.CustomerDto;
-import com.example.bankmanagement.dto.GrievanceDto;
-import com.example.bankmanagement.dto.TransactionRequestDto;
-import com.example.bankmanagement.model.AccountType;
-import com.example.bankmanagement.model.User;
-import com.example.bankmanagement.service.*;
+import com.example.bankmanagement.dto.CreateUserRequest; // Import
+import com.example.bankmanagement.model.AccountType; // Import
+import com.example.bankmanagement.service.StaffService; // Inject StaffService
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +10,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.example.bankmanagement.dto.AccountDto;
+import com.example.bankmanagement.dto.CustomerDto;
+import com.example.bankmanagement.dto.GrievanceDto;
+import com.example.bankmanagement.dto.TransactionRequestDto;
+import com.example.bankmanagement.model.User;
+import com.example.bankmanagement.service.*;
 
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class StaffController {
     private final CustomerService customerService;
     private final TransactionService transactionService;
     private final GrievanceService grievanceService; // Assuming staff can handle grievances
+    private final StaffService staffService;
 
     @GetMapping("/dashboard")
     public String staffDashboard(Model model) {
@@ -35,37 +38,32 @@ public class StaffController {
         return "dashboard-staff"; // dashboard-staff.html
     }
 
-    // --- Account Opening ---
-    @GetMapping("/customers")
-    public String viewCustomersForAccountOpening(Model model) {
-        // Show customers (created by manager) who might not have active accounts yet
-        List<CustomerDto> customers = customerService.getAllCustomers();
-        model.addAttribute("customers", customers);
-        return "staff/view-customers"; // staff/view-customers.html
+    // --- Add New Endpoint for Combined Creation ---
+    @GetMapping("/create-customer-account")
+    public String showCreateCustomerAccountForm(Model model) {
+        model.addAttribute("customerRequest", new CreateUserRequest()); // DTO for form binding
+        model.addAttribute("accountTypes", AccountType.values()); // For account type selection
+        return "staff/create-customer-account"; // Path to the new template
     }
 
-
-    @GetMapping("/open-account/{customerId}")
-    public String showOpenAccountForm(@PathVariable Long customerId, Model model) {
-        CustomerDto customer = customerService.getCustomerDetails(customerService.findCustomerById(customerId).getUser().getUsername()); // Bit indirect, refactor if needed
-        model.addAttribute("customer", customer);
-        model.addAttribute("accountTypes", AccountType.values());
-        model.addAttribute("accountRequest", new AccountDto()); // Use AccountDto or a specific request DTO
-        return "staff/open-account"; // staff/open-account.html
-    }
-
-    @PostMapping("/open-account")
-    public String openAccount(@RequestParam Long customerId,
-                              @RequestParam AccountType accountType,
-                              @AuthenticationPrincipal User currentUser,
-                              RedirectAttributes redirectAttributes) {
+    @PostMapping("/create-customer-account")
+    public String createCustomerAndAccount(@ModelAttribute("customerRequest") CreateUserRequest customerRequest,
+                                           @RequestParam("accountType") AccountType accountType, // Get account type from form
+                                           @AuthenticationPrincipal User currentUser,
+                                           RedirectAttributes redirectAttributes) {
         try {
-            accountService.openAccount(customerId, accountType, currentUser.getId());
-            redirectAttributes.addFlashAttribute("successMessage", "Account opening initiated. Pending Manager approval.");
+            staffService.createCustomerAndOpenAccount(customerRequest, accountType, currentUser.getId());
+            redirectAttributes.addFlashAttribute("successMessage", "Customer profile and account created. Pending Manager approval.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to initiate account opening: " + e.getMessage());
+            // Log the exception in a real app: log.error("...", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create customer/account: " + e.getMessage());
+            // Optionally return back to the form with the error and retain input
+            // model.addAttribute("customerRequest", customerRequest); // Need Model parameter then
+            // model.addAttribute("accountTypes", AccountType.values());
+            // return "staff/create-customer-account";
+            return "redirect:/staff/create-customer-account"; // Redirect back for simplicity now
         }
-        return "redirect:/staff/customers"; // Redirect back to customer list or dashboard
+        return "redirect:/staff/dashboard"; // Redirect to dashboard on success
     }
 
     // --- Transactions ---

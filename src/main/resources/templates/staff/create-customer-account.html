@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Create Customer & Account</title>
+    <th:block layout:fragment="head-extra"></th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Create New Customer and Initial Account</h1>
+    <p class="alert alert-info">Enter the customer's details, initial login credentials, and select the type for their first account. The account requires Manager approval before the customer can log in.</p>
+
+    <div class="card">
+        <div class="card-header">Customer & Account Details</div>
+        <div class="card-body">
+            <form th:action="@{/staff/create-customer-account}" th:object="${customerRequest}" method="post">
+                <!-- Customer Details -->
+                <h4>Customer Information</h4>
+                <div class="form-group">
+                    <label for="name">Full Name:</label>
+                    <input type="text" id="name" th:field="*{name}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" th:field="*{phone}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <textarea id="address" th:field="*{address}" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="panNumber">PAN Number (Optional):</label>
+                    <input type="text" id="panNumber" th:field="*{panNumber}" class="form-control" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="Enter valid PAN (e.g., ABCDE1234F)">
+                    <small class="form-text text-muted">Format: ABCDE1234F</small>
+                </div>
+
+                <hr/>
+                <!-- Login Credentials -->
+                <h4>Initial Login Credentials</h4>
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" th:field="*{username}" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Initial Password:</label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control" required>
+                </div>
+
+                <hr/>
+                <!-- Initial Account Type -->
+                <h4>Initial Account</h4>
+                <div class="form-group">
+                    <label for="accountType">Account Type:</label>
+                    <select id="accountType" name="accountType" class="form-control" required>
+                        <option value="">-- Select Account Type --</option>
+                        <option th:each="type : ${accountTypes}"
+                                th:value="${type}"
+                                th:text="${type.name().substring(0,1) + type.name().substring(1).toLowerCase()}">Savings</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Customer & Submit Account for Approval</button>
+                <a th:href="@{/staff/dashboard}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="scripts-extra"></th:block>
+</body>
+</html>

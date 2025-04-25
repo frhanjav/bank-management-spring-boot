@@ -55,24 +55,6 @@ public class ManagerController {
         return "redirect:/manager/dashboard";
     }
 
-    @GetMapping("/create-customer")
-    public String showCreateCustomerForm(Model model) {
-        model.addAttribute("userRequest", new CreateUserRequest());
-        return "manager/create-customer"; // manager/create-customer.html
-    }
-
-    @PostMapping("/create-customer")
-    public String createCustomer(@ModelAttribute("userRequest") CreateUserRequest request, RedirectAttributes redirectAttributes) {
-        try {
-            managerService.createCustomerUser(request);
-            redirectAttributes.addFlashAttribute("successMessage", "Customer profile created successfully! Account needs opening by Staff.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to create customer: " + e.getMessage());
-        }
-        return "redirect:/manager/dashboard";
-    }
-
-
     // --- Approvals ---
     @GetMapping("/pending-accounts")
     public String viewPendingAccounts(Model model) {

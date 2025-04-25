@@ -8,7 +8,6 @@ import java.util.List;
 public interface ManagerService {
     Manager findManagerByUser(User user);
     UserDto createStaffUser(CreateUserRequest request);
-    UserDto createCustomerUser(CreateUserRequest request); // Creates user+customer profile (inactive)
 
     // Approval workflows
     List<AccountDto> getPendingAccounts();
