@@ -39,10 +39,6 @@ public class AuthController {
         if (error != null) {
             model.addAttribute("errorMessage", "Invalid Credentials");
         }
-        if (logout != null) {
-            model.addAttribute("logoutMessage", "You have been logged out successfully.");
-        }
-        // Return the view name for the login page template
         return "login"; // Renders login.html
     }
 
