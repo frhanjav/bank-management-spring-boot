@@ -35,10 +35,6 @@ public class AuthController {
         }
         // --- End of check ---
 
-        // If not authenticated, proceed to show the login page as before
-        if (error != null) {
-            model.addAttribute("errorMessage", "Invalid Credentials");
-        }
         return "login"; // Renders login.html
     }
 
