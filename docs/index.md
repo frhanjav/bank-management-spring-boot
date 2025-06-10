@@ -173,7 +173,7 @@ The database schema is derived from the JPA entity definitions in the `model` pa
 1. **Clone the Repository:**
 
    ```bash
-   git clone <repository-url>
+   git clone [<repository-url>](https://github.com/frhanjav/bank-management-spring-boot.git)
    cd bank-management
    ```
 
@@ -183,13 +183,13 @@ The database schema is derived from the JPA entity definitions in the `model` pa
 3. **Build the Application:**
 
    ```bash
-   mvn clean package -DskipTests
+   ./mvnw clean package
    ```
 
 4. **Run the Application:**
 
    ```bash
-   mvn spring-boot:run
+   ./mvnw spring-boot:run
    # OR run the JAR directly:
    # java -jar target/bank-management-0.0.1-SNAPSHOT.jar
    ```
