@@ -15,7 +15,6 @@
         <div class="card-body">
             <a th:href="@{/staff/create-customer-account}" class="btn btn-primary">Create New Customer & Account</a>
             <a th:href="@{/staff/transactions}" class="btn btn-primary">Perform Transaction</a>
-            <!-- Add link to view/manage customer profile update requests -->
         </div>
     </div>
 
@@ -23,11 +22,8 @@
         <div class="card-header">Service Requests</div>
         <div class="card-body">
             <a th:href="@{/staff/grievances}" class="btn btn-info">Handle Grievances</a> (<span th:text="${pendingGrievanceCount}">0</span> pending)
-            <!-- Add links for FD management if staff handles maturity/closure -->
         </div>
     </div>
-
-    <!-- Add more dashboard widgets as needed -->
 
 </div>
 </body>

@@ -1,88 +1,15 @@
-/* static/css/style.css */
+/* --- General Body & Container --- */
 body {
-    font-family: sans-serif;
-    padding-top: 70px; /* Add padding to prevent content from hiding behind fixed navbar */
-    padding-bottom: 20px;
-    margin: 0; /* Ensure no default body margin */
-    background-color: #f8f9fa; /* Light background for the page */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    padding-top: 70px; /* Space for fixed navbar */
+    margin: 0;
+    background-color: #f4f7f6; /* Lighter page background */
+    color: #333;
+    line-height: 1.6;
 }
-
-/* ======================= Navbar Styles Start ======================= */
-.navbar {
-    background-color: #343a40; /* Dark background */
-    padding: 0.5rem 1rem;
-    position: fixed; /* Make navbar fixed at the top */
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1030; /* Ensure navbar stays on top */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.navbar-container {
-    display: flex;
-    justify-content: space-between; /* Space out brand and links */
-    align-items: center;
-    width: 100%; /* Ensure container takes full width */
-    max-width: 1140px; /* Match page container width */
-    margin: 0 auto; /* Center the container */
-    padding: 0 15px; /* Match page container padding */
-}
-
-.navbar-brand {
-    color: #ffffff; /* White text */
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-decoration: none;
-}
-.navbar-brand:hover {
-    color: #cccccc;
-}
-
-.navbar-links {
-    display: flex;
-    align-items: center;
-}
-
-.nav-link {
-    color: rgba(255, 255, 255, 0.75); /* Lighter white for links */
-    text-decoration: none;
-    padding: 0.5rem 0.75rem;
-    margin-left: 0.5rem; /* Spacing between links */
-    transition: color 0.15s ease-in-out;
-}
-
-.nav-link:hover,
-.nav-link:focus {
-    color: #ffffff; /* Full white on hover/focus */
-}
-
-.navbar-logout {
-    display: flex;
-    align-items: center;
-    margin-left: 1rem; /* Space before logout section */
-}
-
-.user-greeting {
-    color: rgba(255, 255, 255, 0.6); /* Dimmer color for greeting */
-    margin-right: 0.75rem;
-    font-size: 0.9em;
-}
-
-/* Style the logout button */
-.btn-outline-danger {
-    color: #dc3545;
-    border-color: #dc3545;
-}
-.btn-outline-danger:hover {
-    color: #fff;
-    background-color: #dc3545;
-    border-color: #dc3545;
-}
-/* ======================= Navbar Styles End ========================= */
-
 
 .container {
+    width: 90%;
     max-width: 1140px;
     margin-left: auto;
     margin-right: auto;
@@ -90,11 +17,236 @@ body {
     padding-right: 15px;
 }
 
-/* Add some margin to the main page content to separate it from navbar */
 .page-content {
-    margin-top: 20px;
+    margin-top: 20px; /* Space below navbar */
+    padding-bottom: 40px; /* Space above footer */
 }
 
+/* ======================= Navbar Styles Start ======================= */
+.navbar {
+    background-color: #2c3e50; /* Darker, elegant blue-grey */
+    padding: 0.75rem 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1030;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping for toggler on small screens */
+}
+
+.navbar-brand {
+    color: #ecf0f1; /* Light grey/white */
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+}
+.navbar-brand:hover {
+    color: #ffffff;
+}
+
+/* --- Toggler Button Styles --- */
+.navbar-toggler {
+    padding: 0.4rem 0.8rem;
+    font-size: 1.25rem;
+    background-color: transparent;
+    border: 1px solid rgba(236, 240, 241, 0.3); /* Lighter border */
+    border-radius: 0.25rem;
+    cursor: pointer;
+    display: none; /* Hidden on larger screens */
+    transition: background-color 0.2s ease-in-out;
+}
+.navbar-toggler:hover {
+    background-color: rgba(236, 240, 241, 0.1);
+}
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(236, 240, 241, 0.25);
+}
+
+.navbar-toggler .toggler-icon {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: #ecf0f1; /* Icon color */
+    border-radius: 1px;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+.navbar-toggler .toggler-icon + .toggler-icon {
+    margin-top: 4px;
+}
+
+.navbar-toggler.active .top-bar {
+    transform: rotate(45deg) translate(4px, 4px);
+}
+.navbar-toggler.active .middle-bar {
+    opacity: 0;
+}
+.navbar-toggler.active .bottom-bar {
+    transform: rotate(-45deg) translate(4px, -4px);
+}
+
+/* --- Collapsible Content & Links --- */
+.navbar-collapse {
+    /* On larger screens, it's part of the flex layout */
+    display: flex; /* Default for larger screens */
+    flex-basis: auto; /* Allow content to determine width */
+    flex-grow: 1; /* Allow it to grow */
+    align-items: center;
+}
+
+.navbar-links {
+    display: flex;
+    flex-direction: row; /* Horizontal on large screens */
+    align-items: center;
+    margin-left: auto; /* Push to the right */
+    list-style: none; /* Remove if using ul/li */
+    padding-left: 0; /* Remove if using ul/li */
+}
+
+.nav-link {
+    color: #bdc3c7; /* Lighter grey for links */
+    text-decoration: none;
+    padding: 0.6rem 0.9rem;
+    margin: 0 0.2rem;
+    border-radius: 4px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    font-weight: 500;
+}
+
+.nav-link:hover,
+.nav-link:focus,
+.nav-link.active { /* Add .active class for current page if needed */
+    color: #ffffff;
+    background-color: rgba(236, 240, 241, 0.15); /* Subtle highlight */
+}
+
+/* --- Logout Section --- */
+.navbar-logout {
+    display: flex;
+    align-items: center;
+    margin-left: 1rem; /* Space from other links */
+}
+
+.user-greeting {
+    color: #95a5a6; /* Dimmer grey */
+    margin-right: 0.8rem;
+    font-size: 0.85em;
+    white-space: nowrap;
+}
+
+.logout-form {
+    display: inline; /* Keep form inline */
+}
+
+.btn-logout {
+    background-color: #EB6A5C !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 0.4rem 0.8rem !important;
+    border-radius: 4px !important;
+    font-size: 0.9em !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out !important;
+}
+
+.btn-logout:hover,
+.btn-logout:focus {
+    background-color: #c0392b !important; /* Darker red on hover */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important; /* Subtle shadow on hover */
+}
+
+/* --- Responsive Styles for Navbar (Small Screens) --- */
+@media (max-width: 991.98px) {
+
+    .navbar-toggler {
+        display: block;
+    }
+
+    .navbar-collapse {
+        display: none; /* Hide the links container by default */
+        flex-basis: 100%; /* Take full width when shown */
+        width: 100%;
+        margin-top: 0.5rem; /* Space below brand/toggler */
+        background-color: #34495e; /* Slightly different background for dropdown */
+        border-radius: 0 0 4px 4px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .navbar-collapse.show {
+        display: block; /* Show when .show class is added by JS */
+    }
+
+    .navbar-links {
+        flex-direction: column;
+        align-items: stretch;
+        margin-left: 0;
+        padding: 0.5rem 0;
+    }
+
+    /* Target both direct .nav-link and .nav-link inside spans */
+    .navbar-links > .nav-link,
+    .navbar-links > span > .nav-link { /* ADDED THIS SELECTOR */
+        padding: 0.8rem 1rem;
+        width: 100%;
+        box-sizing: border-box;
+        border-bottom: 1px solid rgba(236, 240, 241, 0.1);
+        margin: 0; /* Reset any horizontal margins */
+        border-radius: 0;
+        display: block; /* Ensure it behaves as a block element */
+        text-align: left; /* Align text to the left */
+    }
+
+    /* Remove bottom border from the very last link element visible */
+    .navbar-links > .nav-link:last-child,
+    .navbar-links > span:last-of-type > .nav-link:last-of-type {
+        border-bottom: none;
+    }
+
+    /* Ensure spans also behave like blocks to stack correctly */
+    .navbar-links > span { /* ADDED THIS */
+        display: flex; /* Use flex to make inner links stretch */
+        flex-direction: column;
+        width: 100%;
+    }
+
+
+    .navbar-links > .nav-link:hover,
+    .navbar-links > span > .nav-link:hover,
+    .navbar-links > .nav-link:focus,
+    .navbar-links > span > .nav-link:focus {
+        background-color: rgba(236, 240, 241, 0.2);
+    }
+
+
+    .navbar-logout {
+       flex-direction: column;
+       align-items: stretch; /* Stretch to full width */
+       padding: 0.8rem 1rem; /* Match nav-link padding */
+       border-top: 1px solid rgba(236, 240, 241, 0.1); /* Separator if it's the last item */
+    }
+    .navbar-logout .user-greeting {
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+     .navbar-logout .logout-form {
+        width: 100%;
+     }
+     .navbar-logout .btn-logout {
+        width: 100%; /* Make logout button full width in dropdown */
+        text-align: center;
+     }
+}
+
+/* ======================= Navbar Styles End ========================= */
 
 .card {
     margin-bottom: 20px;
@@ -116,7 +268,17 @@ body {
     padding: 1.25rem;
 }
 
-/* (Keep other existing styles for table, btn, form-group, form-control, alert etc.) */
+.card-body .btn { /* Or a more specific class if needed */
+    display: block; /* Make each button take its own line */
+    width: 100%;    /* Optional: Make buttons full width */
+    margin-bottom: 0.5rem; /* Add space below each button */
+    box-sizing: border-box; /* Ensure padding/border are included in width */
+}
+
+/* Remove margin from the last button in the group */
+.card-body .btn:last-child {
+    margin-bottom: 0;
+}
 
 .table {
     width: 100%;

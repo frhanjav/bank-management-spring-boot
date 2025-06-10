@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- Add xmlns:layout namespace -->
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
@@ -17,39 +16,51 @@
 
 <!-- ======================= Navbar Start ======================= -->
 <!-- Navbar structure remains the same -->
-<nav class="navbar navbar-expand">
+<nav class="navbar">
     <div class="container navbar-container">
         <a class="navbar-brand" th:href="@{/dashboard}">BankSys</a>
-        <div class="navbar-links">
 
-            <!-- Manager Links -->
-            <span sec:authorize="hasRole('MANAGER')">
-                <a class="nav-link" th:href="@{/manager/create-staff}">Create Staff</a>
-                <a class="nav-link" th:href="@{/manager/pending-accounts}">Pending Accounts</a>
-                <a class="nav-link" th:href="@{/manager/pending-loans}">Pending Loans</a>
-                <a class="nav-link" th:href="@{/manager/pending-fds}">Pending FDs</a>
-                <a class="nav-link" th:href="@{/manager/grievances}">View Grievances</a>
+        <button class="navbar-toggler" type="button" id="navbar-toggler" aria-controls="navbar-collapsible-content" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="toggler-icon top-bar"></span>
+            <span class="toggler-icon middle-bar"></span>
+            <span class="toggler-icon bottom-bar"></span>
+            <!-- Or use an icon: <i class="fas fa-bars"></i> -->
+        </button>
+        
+        <div class="navbar-collapse" id="navbar-collapsible-content">
+            <div class="navbar-links">
+                
+                <!-- Manager Links -->
+                <span sec:authorize="hasRole('MANAGER')">
+                    <a class="nav-link" th:href="@{/manager/create-staff}">Create Staff</a>
+                    <a class="nav-link" th:href="@{/manager/pending-accounts}">Pending Accounts</a>
+                    <a class="nav-link" th:href="@{/manager/pending-loans}">Pending Loans</a>
+                    <a class="nav-link" th:href="@{/manager/pending-fds}">Pending FDs</a>
+                    <a class="nav-link" th:href="@{/manager/grievances}">View Grievances</a>
+                </span>
 
-            </span>
-            <!-- Staff Links -->
-            <span sec:authorize="hasRole('STAFF')">
-                 <a class="nav-link" th:href="@{/staff/create-customer-account}">Create Customer & Account</a>
-                 <a class="nav-link" th:href="@{/staff/transactions}">Transactions</a>
-                 <a class="nav-link" th:href="@{/staff/grievances}">Grievances</a>
-            </span>
-            <!-- Customer Links -->
-            <span sec:authorize="hasRole('CUSTOMER')">
-                 <a class="nav-link" th:href="@{/customer/apply-loan}">Apply Loan</a>
-                 <a class="nav-link" th:href="@{/customer/apply-fd}">Apply FD</a>
-                 <a class="nav-link" th:href="@{/customer/file-grievance}">File Grievance</a>
-                 <a class="nav-link" th:href="@{/customer/profile/update}">Update Profile</a>
-            </span>
-            <!-- Logout Section -->
-            <div class="navbar-logout" sec:authorize="isAuthenticated()">
-                <span class="user-greeting">Welcome, <span sec:authentication="name">User</span>!</span>
-                <form th:action="@{/logout}" method="post" style="display: inline; margin-left: 10px;">
-                    <button type="submit" class="btn btn-sm btn-outline-danger">Logout</button>
-                </form>
+                <!-- Staff Links -->
+                <span sec:authorize="hasRole('STAFF')">
+                    <a class="nav-link" th:href="@{/staff/create-customer-account}">Create Customer & Account</a>
+                    <a class="nav-link" th:href="@{/staff/transactions}">Transactions</a>
+                    <a class="nav-link" th:href="@{/staff/grievances}">Grievances</a>
+                </span>
+
+                <!-- Customer Links -->
+                <span sec:authorize="hasRole('CUSTOMER')">
+                    <a class="nav-link" th:href="@{/customer/apply-loan}">Apply Loan</a>
+                    <a class="nav-link" th:href="@{/customer/apply-fd}">Apply FD</a>
+                    <a class="nav-link" th:href="@{/customer/file-grievance}">File Grievance</a>
+                    <a class="nav-link" th:href="@{/customer/profile/update}">Update Profile</a>
+                </span>
+
+                <!-- Logout Section -->
+                <div class="navbar-logout" sec:authorize="isAuthenticated()">
+                    <span class="user-greeting">Welcome, <span sec:authentication="name">User</span>!</span>
+                    <form th:action="@{/logout}" method="post" class="logout-form">
+                        <button type="submit" class="btn-logout btn">Logout</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -71,14 +82,28 @@
 </div>
 
 <footer>
-    <!-- Footer remains the same -->
     <div class="container" style="text-align: center; margin-top: 30px; color: #666; font-size: 0.9em;">
         © <span th:text="${#dates.year(#dates.createNow())}"></span> Bank Management System
     </div>
 </footer>
 
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        const $toggler = $('#navbar-toggler');
+        const $content = $('#navbar-collapsible-content');
+
+        $toggler.on('click', function() {
+            $content.toggleClass('show');
+            const isExpanded = $content.hasClass('show');
+            $toggler.attr('aria-expanded', isExpanded);
+            $toggler.toggleClass('active'); // For X animation
+        });
+    });
+</script>
+
 <!-- Use layout:fragment to mark placeholder for extra script content -->
 <th:block layout:fragment="scripts-extra" />
-
 </body>
 </html>
