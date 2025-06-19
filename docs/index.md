@@ -173,7 +173,7 @@ The database schema is derived from the JPA entity definitions in the `model` pa
 1. **Clone the Repository:**
 
    ```bash
-   git clone [<repository-url>](https://github.com/frhanjav/bank-management-spring-boot.git)
+   git clone https://github.com/frhanjav/bank-management-spring-boot.git
    cd bank-management
    ```
 

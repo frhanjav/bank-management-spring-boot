@@ -27,7 +27,7 @@ This project simulates a basic banking system featuring:
 1. **Clone the Repository:**
 
    ```bash
-   git clone [<repository-url>](https://github.com/frhanjav/bank-management-spring-boot.git)
+   git clone https://github.com/frhanjav/bank-management-spring-boot.git
    cd bank-management
    ```
 
