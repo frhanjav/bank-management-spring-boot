@@ -10,8 +10,8 @@ This document provides system documentation for the Bank Management System, a mo
 
 - **Role-Based Access Control:** Distinct functionalities and views for Manager, Staff, and Customer roles.
 - **Secure Login:** Uses Spring Security for form-based authentication. No public registration endpoint.
-- **Database:** Uses SQLite via JDBC for data persistence.
-- **Web Interface:** Server-side rendered HTML using Thymeleaf.
+- **Responsive UI:** The web interface, built with Thymeleaf, is fully responsive for mobile and desktop use.
+- **Production-Ready:** Containerized with Docker and configured for a PostgreSQL database environment.
 
 ### 2.2 Manager Features (`ROLE_MANAGER`)
 
@@ -65,14 +65,18 @@ The application follows principles of **Clean Code Architecture**, promoting sep
    - Handles data storage and retrieval.
    - Defines Repository interfaces (e.g., `AccountRepository`) using Spring Data conventions (even if underlying implementation uses JDBC, the interfaces define the contract).
    - Contains implementations (if not using Spring Data JPA directly) or relies on Spring Data's proxy generation.
-   - Interacts directly with the database (SQLite via JDBC in this case).
+   - Interacts directly with the database (PostgreSQL via JDBC in this case).
    - May contain utility classes like `AccountNumberGenerator`.
 5. **Security Layer (`security`):**
    - Handles authentication and authorization using Spring Security.
    - Includes `SecurityConfig`, `UserDetailsServiceImpl`, and custom handlers like `CustomAccessDeniedHandler`.
 
-**Data Flow Example (Account Approval):**
-`ManagerController` -> `ManagerService.approveAccount()` -> `AccountRepository.findById()` -> `AccountRepository.save()` -> `UserRepository.save()` (to enable user) -> `CustomerRepository.save()` (to activate customer) -> Return DTO -> `ManagerController` -> Redirect/Render View.
+**Production Deployment Architecture:**
+
+- The application runs as a **Docker container** on a **GCP Compute Engine VM**.
+- The database is a managed **GCP Cloud SQL for PostgreSQL** instance.
+- The VM connects to the Cloud SQL instance over its public IP, secured by firewall rules (Authorized Networks) in Cloud SQL.
+- A reverse proxy (Nginx) is configured on the VM to handle domain mapping and SSL/TLS termination for HTTPS.
 
 ## 4. Technology Stack
 
@@ -82,10 +86,9 @@ The application follows principles of **Clean Code Architecture**, promoting sep
 - **Web:** Spring Web MVC
 - **Templating:** Thymeleaf
 - **Security:** Spring Security
-- **Database:** SQLite
-- **Data Access:** Spring Data JPA (for entity definitions & schema generation), JDBC (for actual interaction via SQLite driver)
-  - SQLite JDBC Driver (`org.xerial:sqlite-jdbc`)
-  - Hibernate Community Dialect for SQLite (`org.hibernate.orm:hibernate-community-dialects`)
+- **Database:** PostgreSQL
+- **Data Access:** Spring Data JPA (for entity definitions & schema generation), JDBC (for actual interaction via PostgreSQL driver)
+  - PostgreSQL JDBC Driver
 - **Utilities:** Lombok (for reducing boilerplate code)
 - **Server:** Embedded Tomcat (via Spring Boot)
 
@@ -195,52 +198,49 @@ The database schema is derived from the JPA entity definitions in the `model` pa
    ```
 
 5. **Database File:** The application will create/use an SQLite database file named `bank_management.db` in the project's root directory upon first run (or when the file is missing).
+
 6. **Access:** Open your web browser and navigate to `http://localhost:8080`. You will be redirected to the login page (`http://localhost:8080/login`).
+
 7. **Login:** Use the manager credentials (`username: manager`, password: the one you hashed and put in `data.sql`).
 
-## 9. Deployment (Docker Example)
+## 9. Setup and Running Locally using Docker & PostgreSQL
 
-This application can be containerized using Docker for deployment.
+**Prerequisites:**
 
-1. **`Dockerfile`:** A multi-stage `Dockerfile` is provided in the project root to build an optimized runtime image.
-2. **SQLite Persistence:** **Crucially**, SQLite requires a persistent volume when running in Docker to avoid data loss. The database file (`bank_management.db`) must be stored outside the container's ephemeral filesystem.
-3. **Running with Docker:**
+- Docker
+- PostgreSQL database instance
+
+**Steps:**
+
+1. **Create `.env` File:** The application is configured to read database credentials from an environment file. Copy the example file:
 
    ```bash
-   # Build the image
-   docker build -t bank-management-app:latest .
-
-   # Run the container with a named volume for persistence
-   docker run \
-     -p 8080:8080 \
-     -v bank_management_data:/app \
-     --name bank-app-container \
-     -d \
-     bank-management-app:latest
+   cp env.example .env
    ```
 
-   _(Access via `http://localhost:8080`)_
+2. **Configure Credentials:** Open the newly created .env file and fill in the connection details for your PostgreSQL database:
 
-4. **Docker Compose:** An example `docker-compose.yml` can be used for easier local management or deployment on a single server:
-
-   ```yaml
-   version: "3.8"
-   services:
-     bank-app:
-       image: bank-management-app:latest # Use the image built locally or from a registry
-       container_name: bank-management-service
-       restart: unless-stopped
-       ports:
-         - "8080:8080"
-       volumes:
-         - bank_data:/app # Named volume for SQLite DB persistence
-   volumes:
-     bank_data:
+   ```bash
+   # .env file
+   DB_HOST=<your_database_host_ip>
+   DB_PORT=<your_database_port>
+   DB_NAME=<your_database_name>
+   DB_USERNAME=<your_database_username>
+   DB_PASSWORD=<your_database_password>
    ```
 
-   _(Run with `docker-compose up -d`)_
+3. **Run the Docker Container:** Execute the docker run command, which pulls the image from GitHub Container Registry and injects the environment variables from your .env file.
 
-5. **Production Considerations:** For cloud/PaaS deployments, migrating from SQLite to a managed database (PostgreSQL, MySQL) is strongly recommended due to filesystem limitations. A reverse proxy (Nginx, Caddy) should be used for handling HTTPS and domain names.
+   ```bash
+   docker run -d \
+   --name my-bank-app \
+   -p 8080:8080 \
+   --restart unless-stopped \
+   --env-file ./.env \
+   ghcr.io/frhanjav/bank-management-spring-boot:latest
+   ```
+
+4. **Access:** The application will be running at <http://localhost:8080>, connected to your external PostgreSQL database.
 
 ## 10. Key Workflows Summary
 
