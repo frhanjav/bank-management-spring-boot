@@ -12,16 +12,13 @@
     <h1>Customer Dashboard</h1>
     <p>Welcome, <span th:text="${customer != null ? customer.name : principal.username}">Customer</span>!</p>
 
-    <!-- Display error message from controller if loading failed -->
     <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-    <!-- Warning if customer profile exists but is not active -->
     <div th:if="${customer != null and !customer.active}" class="alert alert-warning">
         Your profile requires an approved bank account to access all features like applying for loans/FDs or viewing account details.
         Please wait for account approval or contact the bank.
     </div>
 
-    <!-- Only show financial sections if customer profile exists -->
     <div th:if="${customer != null}">
 
         <!-- Accounts Section -->
@@ -191,7 +188,7 @@
             </div>
         </div>
 
-    </div> <!-- End of th:if customer != null -->
+    </div>
 
 </div>
 <th:block layout:fragment="scripts-extra"></th:block>
