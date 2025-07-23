@@ -1,38 +1,146 @@
-<!DOCTYPE html>
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Login - Bank Management System</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
-<body>
-<div class="login-container">
-    <h2>Bank Management System Login</h2>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <!-- Demo Accounts Card -->
+    <div
+      style="
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        margin: 40px auto 20px auto;
+        background: #f9f9f9;
+        max-width: 400px;
+      "
+    >
+      <h3 style="margin-top: 0; margin-bottom: 10px; text-align: center">
+        Demo Accounts
+      </h3>
+      <p
+        style="
+          font-size: 0.95em;
+          color: #555;
+          text-align: center;
+          margin-bottom: 10px;
+        "
+      >
+        Use these credentials to login as different roles:
+      </p>
+      <table style="width: 100%; font-size: 0.95em; border-collapse: collapse">
+        <thead>
+          <tr style="background: #eee">
+            <th
+              style="
+                padding: 6px;
+                border-bottom: 1px solid #ddd;
+                text-align: center;
+              "
+            >
+              Role
+            </th>
+            <th
+              style="
+                padding: 6px;
+                border-bottom: 1px solid #ddd;
+                text-align: center;
+              "
+            >
+              Username
+            </th>
+            <th
+              style="
+                padding: 6px;
+                border-bottom: 1px solid #ddd;
+                text-align: center;
+              "
+            >
+              Password
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 6px; text-align: center">Manager</td>
+            <td style="padding: 6px; text-align: center">manager1</td>
+            <td style="padding: 6px; text-align: center">manager123</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px; text-align: center">Staff</td>
+            <td style="padding: 6px; text-align: center">staff191</td>
+            <td style="padding: 6px; text-align: center">staff@spring1</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px; text-align: center">Customer</td>
+            <td style="padding: 6px; text-align: center">customer219</td>
+            <td style="padding: 6px; text-align: center">cust@bank2</td>
+          </tr>
+        </tbody>
+      </table>
+      <p
+        style="
+          font-size: 0.85em;
+          color: #888;
+          text-align: center;
+          margin-top: 10px;
+        "
+      >
+        Note: These are demo accounts for viewing and testing only.
+      </p>
+    </div>
 
-    <div th:if="${param.error}" class="alert alert-danger">
+    <div class="login-container">
+      <h2>Bank Management System Login</h2>
+
+      <div th:if="${param.error}" class="alert alert-danger">
         Invalid username or password.
-    </div>
-    <div th:if="${param.logout}" class="alert alert-success">
+      </div>
+      <div th:if="${param.logout}" class="alert alert-success">
         You have been logged out.
-    </div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-    <div th:if="${logoutMessage}" class="alert alert-success" th:text="${logoutMessage}"></div>
+      </div>
+      <div
+        th:if="${errorMessage}"
+        class="alert alert-danger"
+        th:text="${errorMessage}"
+      ></div>
+      <div
+        th:if="${logoutMessage}"
+        class="alert alert-success"
+        th:text="${logoutMessage}"
+      ></div>
 
-
-    <form th:action="@{/login}" method="post">
+      <form th:action="@{/login}" method="post">
         <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" class="form-control" required autofocus>
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="form-control"
+            required
+            autofocus
+          />
         </div>
         <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" class="form-control" required>
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="form-control"
+            required
+          />
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
-    </form>
-    <p style="margin-top: 15px; font-size: 0.9em; text-align: center;">
+        <button type="submit" class="btn btn-primary" style="width: 100%">
+          Login
+        </button>
+      </form>
+      <p style="margin-top: 15px; font-size: 0.9em; text-align: center">
         No registration available. Contact your administrator for access.
-    </p>
-</div>
-</body>
+      </p>
+    </div>
+  </body>
 </html>
