@@ -43,10 +43,9 @@ public class LoanServiceImpl implements LoanService {
         Loan loan = new Loan();
         loan.setCustomer(customer);
         loan.setLoanAmount(amount);
-        loan.setInterestRate(interestRate); // In a real system, rate might be determined by rules
+        loan.setInterestRate(interestRate);
         loan.setTermMonths(termMonths);
-        loan.setStatus(RequestStatus.PENDING); // Requires manager approval
-        // requestedAt is set automatically
+        loan.setStatus(RequestStatus.PENDING);
 
         Loan savedLoan = loanRepository.save(loan);
         return loanMapper.toDto(savedLoan);

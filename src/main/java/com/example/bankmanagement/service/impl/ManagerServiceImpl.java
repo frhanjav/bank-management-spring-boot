@@ -9,7 +9,6 @@ import com.example.bankmanagement.model.*;
 import com.example.bankmanagement.repository.*;
 import com.example.bankmanagement.service.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +28,10 @@ public class ManagerServiceImpl implements ManagerService {
     private final AccountRepository accountRepository;
     private final LoanRepository loanRepository;
     private final FixedDepositRepository fixedDepositRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
     private final AccountMapper accountMapper;
     private final LoanMapper loanMapper;
     private final FixedDepositMapper fdMapper;
-    private final UserService userService; // Use UserService for user creation logic
+    private final UserService userService;
 
 
     @Override
@@ -59,7 +56,6 @@ public class ManagerServiceImpl implements ManagerService {
         if (request.getEmployeeId() == null || request.getEmployeeId().isBlank()) {
             throw new InvalidRequestException("Employee ID is required for Staff");
         }
-        // Create the base user
         UserDto userDto = userService.createUser(request);
         User user = userService.findUserById(userDto.getId());
 
@@ -70,10 +66,8 @@ public class ManagerServiceImpl implements ManagerService {
         staff.setUser(user);
         staffRepository.save(staff);
 
-        return userDto; // Return the created user DTO
+        return userDto;
     }
-
-    // --- Approval Methods ---
 
     @Override
     @Transactional(readOnly = true)
@@ -88,7 +82,7 @@ public class ManagerServiceImpl implements ManagerService {
     public AccountDto approveAccount(Long accountId, Long managerUserId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID: " + accountId));
-        Manager approvingManager = findManagerById(managerUserId); // Verify manager exists
+        Manager approvingManager = findManagerById(managerUserId);
 
         if (account.getStatus() != AccountStatus.PENDING_APPROVAL) {
             throw new InvalidRequestException("Account is not pending approval.");
@@ -98,20 +92,18 @@ public class ManagerServiceImpl implements ManagerService {
         account.setApprovedAt(LocalDateTime.now());
         account.setApprovedBy(approvingManager);
 
-        // Activate the customer and enable their login if this is their first ACTIVE account
         Customer customer = account.getCustomer();
         boolean hasActiveAccount = customer.getAccounts().stream()
-                .anyMatch(acc -> acc.getStatus() == AccountStatus.ACTIVE && !acc.getId().equals(accountId)); // Check other accounts
+                .anyMatch(acc -> acc.getStatus() == AccountStatus.ACTIVE && !acc.getId().equals(accountId));
 
         if (!customer.isActive() && !hasActiveAccount) {
             customer.setActive(true);
             User customerUser = customer.getUser();
             if (customerUser != null) {
-                customerUser.setEnabled(true); // Enable login
+                customerUser.setEnabled(true);
                 userRepository.save(customerUser);
             }
-            customerRepository.save(customer); // Save customer active status
-            // TODO: Implement sending credentials (e.g., email/SMS - requires integration)
+            customerRepository.save(customer);
             System.out.println("Customer " + customer.getName() + " activated. Credentials should be sent.");
         }
 
@@ -125,15 +117,13 @@ public class ManagerServiceImpl implements ManagerService {
     public AccountDto rejectAccount(Long accountId, Long managerUserId) {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with ID: " + accountId));
-        findManagerById(managerUserId); // Verify manager exists and has role
+        findManagerById(managerUserId);
 
         if (account.getStatus() != AccountStatus.PENDING_APPROVAL) {
             throw new InvalidRequestException("Account is not pending approval.");
         }
 
         account.setStatus(AccountStatus.REJECTED);
-        // Optionally set approvedBy to the rejecting manager for tracking
-        // account.setApprovedBy(approvingManager);
         Account savedAccount = accountRepository.save(account);
         return accountMapper.toDto(savedAccount);
     }
@@ -156,7 +146,7 @@ public class ManagerServiceImpl implements ManagerService {
         if (loan.getStatus() != RequestStatus.PENDING) {
             throw new InvalidRequestException("Loan is not pending approval.");
         }
-        loan.setStatus(RequestStatus.APPROVED); // Or ACTIVE if disbursed immediately
+        loan.setStatus(RequestStatus.APPROVED);
         loan.setApprovedAt(LocalDateTime.now());
         loan.setApprovedBy(approvingManager);
         Loan savedLoan = loanRepository.save(loan);
@@ -174,7 +164,6 @@ public class ManagerServiceImpl implements ManagerService {
             throw new InvalidRequestException("Loan is not pending approval.");
         }
         loan.setStatus(RequestStatus.REJECTED);
-        // loan.setApprovedBy(manager); // Optional: track rejector
         Loan savedLoan = loanRepository.save(loan);
         return loanMapper.toDto(savedLoan);
     }
@@ -211,7 +200,7 @@ public class ManagerServiceImpl implements ManagerService {
     public FixedDepositDto rejectFixedDeposit(Long fdId, Long managerUserId) {
         FixedDeposit fd = fixedDepositRepository.findById(fdId)
                 .orElseThrow(() -> new ResourceNotFoundException("Fixed Deposit not found with ID: " + fdId));
-        findManagerById(managerUserId); // Verify manager
+        findManagerById(managerUserId);
 
         if (fd.getStatus() != RequestStatus.PENDING) {
             throw new InvalidRequestException("FD is not pending approval.");

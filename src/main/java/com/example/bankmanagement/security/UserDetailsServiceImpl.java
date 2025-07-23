@@ -1,6 +1,5 @@
 package com.example.bankmanagement.security;
 
-import com.example.bankmanagement.model.User;
 import com.example.bankmanagement.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

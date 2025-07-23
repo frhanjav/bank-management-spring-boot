@@ -2,12 +2,11 @@ package com.example.bankmanagement.controller;
 
 import com.example.bankmanagement.dto.*;
 import com.example.bankmanagement.exception.UnauthorizedOperationException;
-import com.example.bankmanagement.model.Customer;
 import com.example.bankmanagement.model.User;
 import com.example.bankmanagement.service.*;
-import com.example.bankmanagement.service.GrievanceService; // Import GrievanceService
+import com.example.bankmanagement.service.GrievanceService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j; // Add logging
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -16,35 +15,22 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
-import java.util.Collections; // Import Collections
+import java.util.Collections;
 import java.util.List;
 
 @Controller
 @RequestMapping("/customer")
 @PreAuthorize("hasRole('CUSTOMER')")
 @RequiredArgsConstructor
-@Slf4j // Add logging
+@Slf4j
 public class CustomerController {
 
     private final CustomerService customerService;
     private final AccountService accountService;
     private final TransactionService transactionService;
-    // --- Inject Loan and FD Services ---
     private final LoanService loanService;
     private final FixedDepositService fixedDepositService;
-    // ---
     private final GrievanceService grievanceService;
-
-    // Helper method remains the same
-    private Long getCurrentCustomerId(User currentUser) {
-        Customer customer = customerService.findCustomerByUser(currentUser);
-        // Removed the isActive check here - let the dashboard template handle display logic
-        // based on active status if needed, but allow inactive customers to see their profile.
-        // if (!customer.isActive()) {
-        //     throw new UnauthorizedOperationException("Customer account is not active.");
-        // }
-        return customer.getId();
-    }
 
 
     @GetMapping("/dashboard")
@@ -66,20 +52,20 @@ public class CustomerController {
                 model.addAttribute("accounts", accounts);
                 model.addAttribute("loans", loans);
                 model.addAttribute("fixedDeposits", fixedDeposits);
-                model.addAttribute("grievances", grievances); // --- Add to model ---
+                model.addAttribute("grievances", grievances);
 
                 log.info("Found {} accounts, {} loans, {} FDs, {} grievances for customer ID: {}",
                         accounts != null ? accounts.size() : 0,
                         loans != null ? loans.size() : 0,
                         fixedDeposits != null ? fixedDeposits.size() : 0,
-                        grievances != null ? grievances.size() : 0, // --- Log count ---
+                        grievances != null ? grievances.size() : 0,
                         customerId);
             } else {
                 log.warn("Customer profile not found for user: {}. Displaying limited dashboard.", currentUser.getUsername());
                 model.addAttribute("accounts", Collections.emptyList());
                 model.addAttribute("loans", Collections.emptyList());
                 model.addAttribute("fixedDeposits", Collections.emptyList());
-                model.addAttribute("grievances", Collections.emptyList()); // --- Add empty list ---
+                model.addAttribute("grievances", Collections.emptyList());
             }
 
             return "dashboard-customer";
@@ -91,7 +77,7 @@ public class CustomerController {
             model.addAttribute("accounts", Collections.emptyList());
             model.addAttribute("loans", Collections.emptyList());
             model.addAttribute("fixedDeposits", Collections.emptyList());
-            model.addAttribute("grievances", Collections.emptyList()); // --- Add empty list on error ---
+            model.addAttribute("grievances", Collections.emptyList());
             return "dashboard-customer";
         }
     }
@@ -101,7 +87,6 @@ public class CustomerController {
     public String viewAccountDetails(@PathVariable Long accountId, Model model, @AuthenticationPrincipal User currentUser) {
         log.info("Fetching details for account ID: {}", accountId);
         try {
-            // Ensure customer is active before allowing access to sensitive details like transactions
             CustomerDto currentCustomer = customerService.getCustomerDetails(currentUser.getUsername());
             if (currentCustomer == null || !currentCustomer.isActive()) {
                 log.warn("Inactive customer {} attempted to view account {}", currentUser.getUsername(), accountId);
@@ -112,7 +97,6 @@ public class CustomerController {
             AccountDto account = accountService.getAccountById(accountId);
             log.info("Account found: {}", account);
 
-            // Security check: Ensure the account belongs to the logged-in customer
             if (account.getCustomerId() == null || !customerId.equals(account.getCustomerId())) {
                 log.warn("Unauthorized access attempt by customer {} for account {}", customerId, accountId);
                 throw new UnauthorizedOperationException("Access denied to this account.");
@@ -128,14 +112,13 @@ public class CustomerController {
 
         } catch (Exception e) {
             log.error("Error fetching details for account ID: {}", accountId, e);
-            throw e; // Let GlobalExceptionHandler handle it
+            throw e;
         }
     }
 
     // Loan Application
     @GetMapping("/apply-loan")
     public String showApplyLoanForm(Model model, @AuthenticationPrincipal User currentUser) {
-        // Check if customer is active before allowing application
         CustomerDto currentCustomer = customerService.getCustomerDetails(currentUser.getUsername());
         if (currentCustomer == null || !currentCustomer.isActive()) {
             throw new UnauthorizedOperationException("Your account must be active to apply for a loan.");
@@ -151,7 +134,6 @@ public class CustomerController {
                                @AuthenticationPrincipal User currentUser,
                                RedirectAttributes redirectAttributes) {
         try {
-            // Re-check active status on POST for security
             CustomerDto currentCustomer = customerService.getCustomerDetails(currentUser.getUsername());
             if (currentCustomer == null || !currentCustomer.isActive()) {
                 throw new UnauthorizedOperationException("Your account must be active to apply for a loan.");
@@ -201,11 +183,6 @@ public class CustomerController {
     // Grievance Filing
     @GetMapping("/file-grievance")
     public String showFileGrievanceForm(Model model, @AuthenticationPrincipal User currentUser) {
-        CustomerDto currentCustomer = customerService.getCustomerDetails(currentUser.getUsername());
-        if (currentCustomer == null || !currentCustomer.isActive()) {
-            // Decide if inactive users can file grievances - let's allow it for now
-            // throw new UnauthorizedOperationException("Your account must be active to file a grievance.");
-        }
         model.addAttribute("grievanceRequest", new GrievanceDto());
         return "customer/file-grievance";
     }
@@ -216,7 +193,6 @@ public class CustomerController {
                                 @AuthenticationPrincipal User currentUser,
                                 RedirectAttributes redirectAttributes) {
         try {
-            // No active check needed here if we allow inactive users to file
             CustomerDto currentCustomer = customerService.getCustomerDetails(currentUser.getUsername());
             if (currentCustomer == null) {
                 throw new UnauthorizedOperationException("Customer profile not found.");

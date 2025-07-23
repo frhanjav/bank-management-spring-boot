@@ -4,14 +4,12 @@ import com.example.bankmanagement.dto.CustomerDto;
 import com.example.bankmanagement.model.Customer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class CustomerMapper {
 
     private final UserMapper userMapper;
-    private final AccountMapper accountMapper; // Inject if needed for detailed view
 
     public CustomerDto toDto(Customer customer) {
         if (customer == null) return null;

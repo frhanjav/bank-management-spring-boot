@@ -61,18 +61,13 @@ public class CustomerServiceImpl implements CustomerService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         Customer customer = findCustomerByUser(user);
 
-        // Logic to handle update requests - e.g., store in a separate table or flag fields
-        // For simplicity here, we just update directly (NOT PRODUCTION READY for sensitive data)
-        // In reality, this should create a pending update request for Staff/Manager approval
         if (updateRequest.getPanNumber() != null && !updateRequest.getPanNumber().isBlank()) {
             customer.setPanNumber(updateRequest.getPanNumber());
         }
         if (updateRequest.getAddress() != null && !updateRequest.getAddress().isBlank()) {
             customer.setAddress(updateRequest.getAddress());
         }
-        // ... update other fields as needed
         customerRepository.save(customer);
-        // TODO: Implement proper update request workflow (pending state, approval)
         System.out.println("Profile update requested for " + username + ". Needs approval.");
     }
 }
