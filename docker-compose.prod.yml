@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  backend:
+    image: ghcr.io/frhanjav/bank-management-spring-boot-backend:latest
+    container_name: bank-management-backend-prod
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:sqlite:/app/data/bank_management.db
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    volumes:
+      - app-data-prod:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    image: ghcr.io/frhanjav/bank-management-spring-boot-frontend:latest
+    container_name: bank-management-frontend-prod
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+
+volumes:
+  app-data-prod:
+    driver: local

@@ -9,7 +9,7 @@ on:
 env:
   REGISTRY: ghcr.io
   BACKEND_IMAGE_NAME: ${{ github.repository }}-backend
-  NGINX_IMAGE_NAME: ${{ github.repository }}-nginx
+  FRONTEND_IMAGE_NAME: ${{ github.repository }}-frontend
 
 jobs:
   build-and-push:
@@ -40,11 +40,11 @@ jobs:
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Extract metadata for nginx
-        id: meta-nginx
+      - name: Extract metadata for frontend
+        id: meta-frontend
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.NGINX_IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -60,16 +60,16 @@ jobs:
           tags: ${{ steps.meta-backend.outputs.tags }}
           labels: ${{ steps.meta-backend.outputs.labels }}
 
-      - name: Build and push nginx image
+      - name: Build and push frontend image
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile.nginx
+          file: ./Dockerfile.frontend
           push: true
-          tags: ${{ steps.meta-nginx.outputs.tags }}
-          labels: ${{ steps.meta-nginx.outputs.labels }}
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
 
       - name: Image digest
         run: |
           echo "Backend image: ${{ steps.meta-backend.outputs.tags }}"
-          echo "Nginx image: ${{ steps.meta-nginx.outputs.tags }}"
+          echo "Frontend image: ${{ steps.meta-frontend.outputs.tags }}"
