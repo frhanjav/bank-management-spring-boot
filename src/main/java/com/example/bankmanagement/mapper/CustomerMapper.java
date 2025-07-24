@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class CustomerMapper {
 
     private final UserMapper userMapper;
+    private final AccountMapper accountMapper;
 
     public CustomerDto toDto(Customer customer) {
         if (customer == null) return null;

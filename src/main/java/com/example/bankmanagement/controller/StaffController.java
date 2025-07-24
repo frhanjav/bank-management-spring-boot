@@ -2,7 +2,7 @@ package com.example.bankmanagement.controller;
 
 import com.example.bankmanagement.dto.CreateUserRequest;
 import com.example.bankmanagement.model.AccountType;
-import com.example.bankmanagement.service.StaffService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StaffController {
 
+    private final AccountService accountService;
+    private final CustomerService customerService;
     private final TransactionService transactionService;
     private final GrievanceService grievanceService;
     private final StaffService staffService;
