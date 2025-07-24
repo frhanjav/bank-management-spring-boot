@@ -1,6 +1,8 @@
 # Bank Management System (Spring Boot)
 
-A monolithic web application built with Spring Boot demonstrating core banking functionalities with role-based access control (Manager, Staff, Customer).
+Originally a simple monolithic web application, it has been architected into a multi-container system with a separate frontend landing page and a Spring Boot backend, orchestrated by Docker and served through an Nginx reverse proxy.
+
+The application simulates core banking functionalities including user management (Manager, Staff, Customer), account management, loan/FD applications, and grievance filing.
 
 ## Overview
 
@@ -21,6 +23,8 @@ This project simulates a basic banking system featuring:
 - Java 17 JDK or later
 - Apache Maven 3.6+
 - Git (for cloning)
+- Docker
+- PostgreSQL database instance
 
 **Steps:**
 
@@ -28,7 +32,7 @@ This project simulates a basic banking system featuring:
 
    ```bash
    git clone https://github.com/frhanjav/bank-management-spring-boot.git
-   cd bank-management
+   cd bank-management-spring-boot
    ```
 
 2. **Update `data.sql`:**
@@ -40,30 +44,13 @@ This project simulates a basic banking system featuring:
    ./mvnw clean package
    ```
 
-4. **Run the Application:**
-
-   ```bash
-   ./mvnw spring-boot:run
-   # OR run the JAR directly:
-   # java -jar target/bank-management-0.0.1-SNAPSHOT.jar
-   ```
-
-## Setup and Running Locally using Docker & PostgreSQL
-
-**Prerequisites:**
-
-- Docker
-- PostgreSQL database instance
-
-**Steps:**
-
-1. **Create `.env` File:** The application is configured to read database credentials from an environment file. Copy the example file:
+4. **Create `.env` File:** The application is configured to read database credentials from an environment file. Copy the example file:
 
    ```bash
    cp env.example .env
    ```
 
-2. **Configure Credentials:** Open the newly created .env file and fill in the connection details for your PostgreSQL database:
+5. **Configure Credentials:** Open the newly created .env file and fill in the connection details for your PostgreSQL database:
 
    ```bash
    # .env file
@@ -74,22 +61,23 @@ This project simulates a basic banking system featuring:
    DB_PASSWORD=<your_database_password>
    ```
 
-3. **Run the Docker Container:** Execute the docker run command, which pulls the image from GitHub Container Registry and injects the environment variables from your .env file.
+6. **Run the Docker Container:** Execute the docker run command, which pulls the image from GitHub Container Registry and injects the environment variables from your .env file.
 
    ```bash
-   docker run -d \
-   --name my-bank-app \
-   -p 8080:8080 \
-   --restart unless-stopped \
-   --env-file ./.env \
-   ghcr.io/frhanjav/bank-management-spring-boot:latest
+    docker compose -f docker-compose-db.yml up -d
    ```
 
-4. **Database File:** The application will create/use an SQLite database file named `bank_management.db` in the project's root directory upon first run (or when the file is missing).
+7. **Run the Application:**
 
-5. **Access:** Open your web browser and navigate to `http://localhost:8080`. You will be redirected to the login page (`http://localhost:8080/login`).
+   ```bash
+   ./mvnw spring-boot:run
+   # OR run the JAR directly:
+   # java -jar target/bank-management-0.0.1-SNAPSHOT.jar
+   ```
 
-6. **Login:** Use the manager credentials (`username: manager`, password: the one you hashed and put in `data.sql` (currently its `manager123`)).
+8. **Access:** Open your web browser and navigate to `http://localhost:8080`. You will be redirected to the login page (`http://localhost:8080/login`).
+
+9. **Login:** Use the manager credentials (`username: manager`, password: the one you hashed and put in `data.sql`).
 
 ## Key Workflows Summary
 
