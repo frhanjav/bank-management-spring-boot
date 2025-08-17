@@ -14,3 +14,4 @@ public class CreateUserRequest {
     private String address;
     private String panNumber;
     private String employeeId;
+}
