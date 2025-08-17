@@ -158,7 +158,7 @@ public class ManagerServiceImpl implements ManagerService {
     public LoanDto rejectLoan(Long loanId, Long managerUserId) {
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new ResourceNotFoundException("Loan not found with ID: " + loanId));
-        findManagerById(managerUserId); // Verify manager
+        findManagerById(managerUserId);
 
         if (loan.getStatus() != RequestStatus.PENDING) {
             throw new InvalidRequestException("Loan is not pending approval.");

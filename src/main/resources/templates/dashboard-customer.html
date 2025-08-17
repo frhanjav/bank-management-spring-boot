@@ -35,7 +35,6 @@
       </div>
 
       <div th:if="${customer != null}">
-        <!-- Accounts Section -->
         <div class="card">
           <div class="card-header">Your Accounts</div>
           <div class="card-body">
@@ -57,7 +56,6 @@
           </div>
         </div>
 
-        <!-- ======================= Loans Section Start ======================= -->
         <div class="card">
           <div class="card-header">Your Loans</div>
           <div class="card-body">
@@ -105,7 +103,6 @@
                     Date
                   </td>
                   <td>
-                    <!-- Use badges for status -->
                     <span
                       th:switch="${loan.status?.name()}"
                       style="
@@ -168,9 +165,7 @@
             </div>
           </div>
         </div>
-        <!-- ======================= Loans Section End ========================= -->
 
-        <!-- ======================= Fixed Deposits Section Start ======================= -->
         <div class="card">
           <div class="card-header">Your Fixed Deposits</div>
           <div class="card-body">
@@ -224,7 +219,6 @@
                     Maturity
                   </td>
                   <td>
-                    <!-- Use badges for status -->
                     <span
                       th:switch="${fd.status?.name()}"
                       style="
@@ -285,9 +279,7 @@
             </div>
           </div>
         </div>
-        <!-- ======================= Fixed Deposits Section End ======================= -->
 
-        <!-- ======================= Grievances Section Start ======================= -->
         <div class="card">
           <div class="card-header">Your Grievances</div>
           <div class="card-body">
@@ -383,9 +375,7 @@
             </div>
           </div>
         </div>
-        <!-- ======================= Grievances Section End ========================= -->
 
-        <!-- Services Section -->
         <div class="card">
           <div class="card-header">Other Services</div>
           <div class="card-body">

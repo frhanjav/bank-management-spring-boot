@@ -14,5 +14,5 @@ public class GrievanceDto {
     private LocalDateTime resolvedDate;
     private Long customerId;
     private String customerName;
-    private String handledByUsername; // Username of staff/manager
+    private String handledByUsername;
 }

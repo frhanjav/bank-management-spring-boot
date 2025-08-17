@@ -16,13 +16,13 @@ public class Grievance {
     @Column(nullable = false)
     private String subject;
 
-    @Lob // Large object for potentially long descriptions
+    @Lob
     @Column(nullable = false)
     private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private RequestStatus status = RequestStatus.PENDING; // PENDING = Open, APPROVED = Resolved
+    private RequestStatus status = RequestStatus.PENDING;
 
     private LocalDateTime submittedDate = LocalDateTime.now();
     private LocalDateTime resolvedDate;
@@ -31,8 +31,7 @@ public class Grievance {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    // Staff or Manager who handled/resolved it
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "handled_by_user_id") // Link to User ID for flexibility
+    @JoinColumn(name = "handled_by_user_id")
     private User handledBy;
 }

@@ -12,6 +12,6 @@ public class CustomerDto {
     private String address;
     private String panNumber;
     private boolean active;
-    private UserDto user; // Include basic user info if needed
-    private List<AccountDto> accounts; // Optional: include accounts in detailed view
+    private UserDto user;
+    private List<AccountDto> accounts;
 }

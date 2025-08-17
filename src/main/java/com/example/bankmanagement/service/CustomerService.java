@@ -9,7 +9,6 @@ public interface CustomerService {
     Customer findCustomerByUser(User user);
     Customer findCustomerById(Long customerId);
     CustomerDto getCustomerDetails(String username);
-    List<CustomerDto> getAllCustomers(); // For staff/manager view
-    void requestProfileUpdate(String username, CustomerDto updateRequest); // Customer initiates
-    // Manager/Staff might need methods to view/approve updates
+    List<CustomerDto> getAllCustomers();
+    void requestProfileUpdate(String username, CustomerDto updateRequest);
 }

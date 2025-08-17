@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    @Transactional // Ensure atomicity
+    @Transactional
     public UserDto createUser(CreateUserRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new InvalidRequestException("Username already exists: " + request.getUsername());
@@ -32,10 +32,9 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // Hash password
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole());
 
-        // Customers are initially disabled until their first account is approved
         user.setEnabled(request.getRole() != Role.CUSTOMER);
 
         User savedUser = userRepository.save(user);

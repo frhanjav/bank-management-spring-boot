@@ -32,7 +32,7 @@ public class FixedDeposit {
 
     private LocalDateTime requestedAt = LocalDateTime.now();
     private LocalDateTime approvedAt;
-    private LocalDateTime closedAt; // When matured or prematurely closed
+    private LocalDateTime closedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)

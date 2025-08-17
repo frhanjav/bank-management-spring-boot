@@ -13,8 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import com.example.bankmanagement.dto.GrievanceDto; // Import GrievanceDto
-import com.example.bankmanagement.service.GrievanceService; // Import GrievanceService
+import com.example.bankmanagement.dto.GrievanceDto;
+import com.example.bankmanagement.service.GrievanceService;
 
 import java.util.List;
 
@@ -25,23 +25,21 @@ import java.util.List;
 public class ManagerController {
 
     private final ManagerService managerService;
-    private final GrievanceService grievanceService; // Inject GrievanceService
+    private final GrievanceService grievanceService;
 
 
     @GetMapping("/dashboard")
     public String managerDashboard(Model model) {
-        // Add any necessary data for the manager dashboard
         model.addAttribute("pendingAccountCount", managerService.getPendingAccounts().size());
         model.addAttribute("pendingLoanCount", managerService.getPendingLoans().size());
         model.addAttribute("pendingFdCount", managerService.getPendingFixedDeposits().size());
-        return "dashboard-manager"; // dashboard-manager.html
+        return "dashboard-manager";
     }
 
-    // --- User Creation ---
     @GetMapping("/create-staff")
     public String showCreateStaffForm(Model model) {
         model.addAttribute("userRequest", new CreateUserRequest());
-        return "manager/create-staff"; // manager/create-staff.html
+        return "manager/create-staff";
     }
 
     @PostMapping("/create-staff")
@@ -55,12 +53,11 @@ public class ManagerController {
         return "redirect:/manager/dashboard";
     }
 
-    // --- Approvals ---
     @GetMapping("/pending-accounts")
     public String viewPendingAccounts(Model model) {
         List<AccountDto> pendingAccounts = managerService.getPendingAccounts();
         model.addAttribute("accounts", pendingAccounts);
-        return "manager/pending-accounts"; // manager/pending-accounts.html
+        return "manager/pending-accounts";
     }
 
     @PostMapping("/accounts/{accountId}/approve")
@@ -90,7 +87,7 @@ public class ManagerController {
     public String viewPendingLoans(Model model) {
         List<LoanDto> pendingLoans = managerService.getPendingLoans();
         model.addAttribute("loans", pendingLoans);
-        return "manager/pending-loans"; // manager/pending-loans.html
+        return "manager/pending-loans";
     }
 
     @PostMapping("/loans/{loanId}/approve")
@@ -120,7 +117,7 @@ public class ManagerController {
     public String viewPendingFDs(Model model) {
         List<FixedDepositDto> pendingFDs = managerService.getPendingFixedDeposits();
         model.addAttribute("fds", pendingFDs);
-        return "manager/pending-fds"; // manager/pending-fds.html
+        return "manager/pending-fds";
     }
 
     @PostMapping("/fds/{fdId}/approve")
@@ -145,12 +142,11 @@ public class ManagerController {
         return "redirect:/manager/pending-fds";
     }
 
-    // --- Add Grievance View ---
     @GetMapping("/grievances")
     public String viewAllGrievances(Model model) {
         List<GrievanceDto> allGrievances = grievanceService.getAllGrievances();
         model.addAttribute("grievances", allGrievances);
-        return "manager/view-grievances"; // manager/view-grievances.html
+        return "manager/view-grievances";
     }
 
 }

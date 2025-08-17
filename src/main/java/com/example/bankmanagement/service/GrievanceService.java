@@ -6,9 +6,9 @@ import java.util.List;
 public interface GrievanceService {
     GrievanceDto fileGrievance(Long customerId, String subject, String description);
     List<GrievanceDto> getCustomerGrievances(Long customerId);
-    List<GrievanceDto> getPendingGrievances(); // For staff/manager
-    GrievanceDto resolveGrievance(Long grievanceId, Long handlerUserId); // Staff/Manager resolves
+    List<GrievanceDto> getPendingGrievances();
+    GrievanceDto resolveGrievance(Long grievanceId, Long handlerUserId);
     GrievanceDto getGrievanceById(Long grievanceId);
 
-    List<GrievanceDto> getAllGrievances(); // For Manager overview
+    List<GrievanceDto> getAllGrievances();
 }

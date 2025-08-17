@@ -15,6 +15,6 @@ public class AccountDto {
     private AccountType accountType;
     private LocalDateTime createdAt;
     private LocalDateTime approvedAt;
-    private Long customerId; // Just the ID is often enough
-    private String customerName; // Helpful for display
+    private Long customerId;
+    private String customerName;
 }

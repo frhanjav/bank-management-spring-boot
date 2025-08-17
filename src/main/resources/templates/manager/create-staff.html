@@ -30,7 +30,6 @@
                     <label for="password">Initial Password:</label>
                     <input type="password" id="password" th:field="*{password}" class="form-control" required>
                 </div>
-                <!-- Role is automatically set to STAFF in the backend -->
                 <button type="submit" class="btn btn-primary">Create Staff</button>
                 <a th:href="@{/manager/dashboard}" class="btn btn-secondary">Cancel</a>
             </form>

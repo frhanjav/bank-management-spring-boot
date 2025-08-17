@@ -31,9 +31,7 @@
             <td th:text="${grievance.subject}">Issue Subject</td>
             <td th:text="${#temporals.format(grievance.submittedDate, 'yyyy-MM-dd HH:mm')}">Timestamp</td>
             <td>
-                <!-- Basic view, could add a modal or separate page for full description -->
                 <span th:text="${#strings.abbreviate(grievance.description, 50)}">Short description...</span>
-                <!-- <a href="#" class="btn btn-info btn-sm">View Full</a> -->
             </td>
             <td>
                 <form th:action="@{/staff/grievances/{id}/resolve(id=${grievance.id})}" method="post" style="display: inline;">

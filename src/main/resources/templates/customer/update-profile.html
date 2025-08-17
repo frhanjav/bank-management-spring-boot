@@ -14,7 +14,6 @@
         <div class="card-header">Your Information</div>
         <div class="card-body">
             <form th:action="@{/customer/profile/update}" th:object="${customer}" method="post">
-                <!-- Display non-editable fields -->
                 <div class="form-group">
                     <label>Name:</label>
                     <input type="text" class="form-control" th:value="*{name}" disabled>
@@ -40,8 +39,6 @@
                     <input type="text" id="panNumber" th:field="*{panNumber}" class="form-control" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="Enter valid PAN (e.g., ABCDE1234F)">
                     <small class="form-text text-muted">Format: ABCDE1234F</small>
                 </div>
-
-                <!-- Add other fields that customers can request updates for -->
 
                 <button type="submit" class="btn btn-primary">Submit Update Request</button>
                 <a th:href="@{/customer/dashboard}" class="btn btn-secondary">Cancel</a>

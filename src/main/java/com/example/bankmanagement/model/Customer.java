@@ -17,11 +17,11 @@ public class Customer {
     private String email;
     private String phone;
     private String address;
-    private String panNumber; // Can be updated
+    private String panNumber;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user; // Link to login credentials
+    private User user;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Account> accounts;
@@ -35,6 +35,5 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Grievance> grievances;
 
-    // Indicates if the customer profile itself is active (usually after first account approval)
     private boolean active = false;
 }

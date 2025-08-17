@@ -34,7 +34,6 @@ public class GrievanceServiceImpl implements GrievanceService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found: " + customerId));
 
-        // Crucial Check: Only active customers can file
         if (!customer.isActive()) {
             throw new UnauthorizedOperationException("Customer account is not active. Cannot file grievance.");
         }
@@ -46,8 +45,7 @@ public class GrievanceServiceImpl implements GrievanceService {
         grievance.setCustomer(customer);
         grievance.setSubject(subject);
         grievance.setDescription(description);
-        grievance.setStatus(RequestStatus.PENDING); // PENDING = Open
-        // submittedDate is set automatically
+        grievance.setStatus(RequestStatus.PENDING);
 
         Grievance savedGrievance = grievanceRepository.save(grievance);
         return grievanceMapper.toDto(savedGrievance);
@@ -67,7 +65,6 @@ public class GrievanceServiceImpl implements GrievanceService {
     @Override
     @Transactional(readOnly = true)
     public List<GrievanceDto> getPendingGrievances() {
-        // PENDING status means open/unresolved
         return grievanceRepository.findByStatus(RequestStatus.PENDING).stream()
                 .map(grievanceMapper::toDto)
                 .collect(Collectors.toList());
@@ -82,7 +79,6 @@ public class GrievanceServiceImpl implements GrievanceService {
         User handler = userRepository.findById(handlerUserId)
                 .orElseThrow(() -> new ResourceNotFoundException("Handling user not found: " + handlerUserId));
 
-        // Ensure handler is Staff or Manager
         if (handler.getRole() != Role.STAFF && handler.getRole() != Role.MANAGER) {
             throw new UnauthorizedOperationException("Only Staff or Manager can resolve grievances.");
         }
@@ -91,7 +87,7 @@ public class GrievanceServiceImpl implements GrievanceService {
             throw new InvalidRequestException("Grievance is not currently open (pending).");
         }
 
-        grievance.setStatus(RequestStatus.APPROVED); // Using APPROVED to mean Resolved
+        grievance.setStatus(RequestStatus.APPROVED);
         grievance.setResolvedDate(LocalDateTime.now());
         grievance.setHandledBy(handler);
 
@@ -110,7 +106,6 @@ public class GrievanceServiceImpl implements GrievanceService {
     @Override
     @Transactional(readOnly = true)
     public List<GrievanceDto> getAllGrievances() {
-        // Fetch all grievances and map them to DTOs
         return grievanceRepository.findAll().stream()
                 .map(grievanceMapper::toDto)
                 .collect(Collectors.toList());

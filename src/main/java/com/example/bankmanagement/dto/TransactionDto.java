@@ -12,6 +12,6 @@ public class TransactionDto {
     private BigDecimal amount;
     private LocalDateTime timestamp;
     private String description;
-    private String accountNumber; // Identify account easily
+    private String accountNumber;
 }
 

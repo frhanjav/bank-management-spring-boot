@@ -18,7 +18,7 @@ public class AccountMapper {
         dto.setApprovedAt(account.getApprovedAt());
         if (account.getCustomer() != null) {
             dto.setCustomerId(account.getCustomer().getId());
-            dto.setCustomerName(account.getCustomer().getName()); // Add customer name
+            dto.setCustomerName(account.getCustomer().getName());
         }
         return dto;
     }

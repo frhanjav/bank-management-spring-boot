@@ -44,29 +44,23 @@ public class StaffController {
 
     @PostMapping("/create-customer-account")
     public String createCustomerAndAccount(@ModelAttribute("customerRequest") CreateUserRequest customerRequest,
-                                           @RequestParam("accountType") AccountType accountType, // Get account type from form
+                                           @RequestParam("accountType") AccountType accountType,
                                            @AuthenticationPrincipal User currentUser,
                                            RedirectAttributes redirectAttributes) {
         try {
             staffService.createCustomerAndOpenAccount(customerRequest, accountType, currentUser.getId());
             redirectAttributes.addFlashAttribute("successMessage", "Customer profile and account created. Pending Manager approval.");
         } catch (Exception e) {
-            // Log the exception in a real app: log.error("...", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create customer/account: " + e.getMessage());
-            // Optionally return back to the form with the error and retain input
-            // model.addAttribute("customerRequest", customerRequest); // Need Model parameter then
-            // model.addAttribute("accountTypes", AccountType.values());
-            // return "staff/create-customer-account";
             return "redirect:/staff/create-customer-account";
         }
         return "redirect:/staff/dashboard";
     }
 
-    // --- Transactions ---
     @GetMapping("/transactions")
     public String showTransactionForm(Model model) {
         model.addAttribute("transactionRequest", new TransactionRequestDto());
-        return "staff/manage-transactions"; // staff/manage-transactions.html
+        return "staff/manage-transactions";
     }
 
     @PostMapping("/transactions/deposit")
@@ -91,12 +85,11 @@ public class StaffController {
         return "redirect:/staff/transactions";
     }
 
-    // --- Grievance Handling (Optional for Staff) ---
     @GetMapping("/grievances")
     public String viewPendingGrievances(Model model) {
         List<GrievanceDto> grievances = grievanceService.getPendingGrievances();
         model.addAttribute("grievances", grievances);
-        return "staff/handle-grievances"; // staff/handle-grievances.html
+        return "staff/handle-grievances";
     }
 
     @PostMapping("/grievances/{grievanceId}/resolve")

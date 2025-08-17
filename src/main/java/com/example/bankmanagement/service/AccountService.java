@@ -5,7 +5,7 @@ import com.example.bankmanagement.model.AccountType;
 import java.util.List;
 
 public interface AccountService {
-    AccountDto openAccount(Long customerId, AccountType accountType, Long staffUserId); // Staff initiates
+    AccountDto openAccount(Long customerId, AccountType accountType, Long staffUserId);
     AccountDto getAccountByNumber(String accountNumber);
     AccountDto getAccountById(Long accountId);
     List<AccountDto> getCustomerAccounts(Long customerId);

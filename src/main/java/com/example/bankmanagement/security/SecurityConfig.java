@@ -1,6 +1,6 @@
 package com.example.bankmanagement.security;
 
-import lombok.RequiredArgsConstructor; // Ensure you have this
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,18 +13,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler; // Import AccessDeniedHandler
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity // Needed for @PreAuthorize
-@RequiredArgsConstructor // Use constructor injection
+@EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
-    private final AccessDeniedHandler customAccessDeniedHandler; // Inject the custom handler
+    private final AccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -42,37 +42,33 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity, enable in production with proper handling
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/error", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/manager/**").hasRole("MANAGER")
                         .requestMatchers("/staff/**").hasRole("STAFF")
                         .requestMatchers("/customer/**").hasRole("CUSTOMER")
-                        .requestMatchers("/dashboard").authenticated() // Any logged-in user can see the dashboard dispatcher
-                        .anyRequest().authenticated() // All other requests need authentication
+                        .requestMatchers("/dashboard").authenticated()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/login") // Custom login page URL
-                        .loginProcessingUrl("/login") // URL to submit the username and password to
-                        .defaultSuccessUrl("/dashboard", true) // Redirect to dashboard on success
-                        .failureUrl("/login?error=true")  // Redirect on failure
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .defaultSuccessUrl("/dashboard", true)
+                        .failureUrl("/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // URL to trigger logout
-                        .logoutSuccessUrl("/login?logout=true")  // Redirect after logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/login?logout=true")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
-                // ---> ADD EXCEPTION HANDLING CONFIGURATION <---
                 .exceptionHandling(exceptions -> exceptions
-                                .accessDeniedHandler(customAccessDeniedHandler) // Use custom handler for 403
-                        // You could also configure authenticationEntryPoint for unauthenticated users
-                        // but formLogin().loginPage() already handles the redirect to /login
-                        // .authenticationEntryPoint(...)
+                                .accessDeniedHandler(customAccessDeniedHandler) 
                 )
-                .authenticationProvider(authenticationProvider()); // Register the custom provider
+                .authenticationProvider(authenticationProvider());
 
         return http.build();
     }

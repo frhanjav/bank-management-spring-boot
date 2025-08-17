@@ -31,7 +31,6 @@ public class LoanServiceImpl implements LoanService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found: " + customerId));
 
-        // Crucial Check: Only active customers can apply
         if (!customer.isActive()) {
             throw new UnauthorizedOperationException("Customer account is not active. Cannot apply for loan.");
         }

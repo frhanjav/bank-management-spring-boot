@@ -16,7 +16,6 @@
         <div class="card-header">Customer & Account Details</div>
         <div class="card-body">
             <form th:action="@{/staff/create-customer-account}" th:object="${customerRequest}" method="post">
-                <!-- Customer Details -->
                 <h4>Customer Information</h4>
                 <div class="form-group">
                     <label for="name">Full Name:</label>
@@ -41,7 +40,6 @@
                 </div>
 
                 <hr/>
-                <!-- Login Credentials -->
                 <h4>Initial Login Credentials</h4>
                 <div class="form-group">
                     <label for="username">Username:</label>
@@ -53,7 +51,6 @@
                 </div>
 
                 <hr/>
-                <!-- Initial Account Type -->
                 <h4>Initial Account</h4>
                 <div class="form-group">
                     <label for="accountType">Account Type:</label>

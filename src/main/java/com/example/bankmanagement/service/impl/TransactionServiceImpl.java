@@ -101,8 +101,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setTransactionType(type);
         transaction.setAmount(request.getAmount());
         transaction.setDescription(request.getDescription());
-        transaction.setPerformedByStaff(staff); // Link staff who performed it
-        // Timestamp is set automatically
+        transaction.setPerformedByStaff(staff);
         return transaction;
     }
 }

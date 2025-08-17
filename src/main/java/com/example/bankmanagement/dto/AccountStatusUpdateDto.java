@@ -5,5 +5,5 @@ import lombok.Data;
 
 @Data
 public class AccountStatusUpdateDto {
-    private AccountStatus status; // Target status (e.g., ACTIVE, REJECTED)
+    private AccountStatus status;
 }

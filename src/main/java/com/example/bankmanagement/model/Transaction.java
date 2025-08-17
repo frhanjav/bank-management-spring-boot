@@ -31,7 +31,6 @@ public class Transaction {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    // Optional: Link to staff who performed the transaction if done via counter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performed_by_staff_id")
     private Staff performedByStaff;

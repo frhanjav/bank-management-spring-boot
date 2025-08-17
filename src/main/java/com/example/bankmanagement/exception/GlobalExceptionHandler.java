@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ModelAndView handleResourceNotFoundException(ResourceNotFoundException ex) {
         log.error("Resource not found: {}", ex.getMessage());
-        ModelAndView mav = new ModelAndView("error"); // Your error.html template
+        ModelAndView mav = new ModelAndView("error");
         mav.addObject("status", HttpStatus.NOT_FOUND.value());
         mav.addObject("error", "Not Found");
         mav.addObject("message", ex.getMessage());
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ModelAndView handleGenericException(Exception ex) {
-        log.error("An unexpected error occurred: ", ex); // Log the full stack trace
+        log.error("An unexpected error occurred: ", ex);
         ModelAndView mav = new ModelAndView("error");
         mav.addObject("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         mav.addObject("error", "Internal Server Error");

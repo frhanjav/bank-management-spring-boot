@@ -18,7 +18,7 @@ public class Loan {
     private BigDecimal loanAmount;
 
     @Column(nullable = false)
-    private Double interestRate; // e.g., 5.5 for 5.5%
+    private Double interestRate;
 
     @Column(nullable = false)
     private Integer termMonths;

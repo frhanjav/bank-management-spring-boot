@@ -29,9 +29,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
-    private boolean enabled = true; // Enabled by default, might be false until approved for customer
+    private boolean enabled = true;
 
-    // UserDetails methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));

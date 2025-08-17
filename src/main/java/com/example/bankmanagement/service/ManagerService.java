@@ -9,7 +9,6 @@ public interface ManagerService {
     Manager findManagerByUser(User user);
     UserDto createStaffUser(CreateUserRequest request);
 
-    // Approval workflows
     List<AccountDto> getPendingAccounts();
     AccountDto approveAccount(Long accountId, Long managerUserId);
     AccountDto rejectAccount(Long accountId, Long managerUserId);

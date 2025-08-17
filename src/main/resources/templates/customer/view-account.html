@@ -11,25 +11,21 @@
 <div layout:fragment="content">
     <h1>Account Details</h1>
 
-    <!-- Check if account object itself exists -->
     <div th:if="${account == null}" class="alert alert-danger">
         Error: Account details could not be loaded.
     </div>
 
-    <div th:unless="${account == null}"> <!-- Only proceed if account is not null -->
+    <div th:unless="${account == null}">
         <div class="card mb-4">
             <div class="card-header">Account Summary</div>
             <div class="card-body">
-                <!-- Use null-safe operator (?.) for potentially null properties -->
                 <p><strong>Account Number:</strong> <span th:text="${account.accountNumber}">N/A</span></p>
                 <p><strong>Account Type:</strong> <span th:text="${account.accountType}">N/A</span></p>
-                <!-- Check balance before formatting -->
                 <p><strong>Current Balance:</strong>
                     <span th:if="${account.balance != null}" th:text="${#numbers.formatCurrency(account.balance)}">$0.00</span>
                     <span th:unless="${account.balance != null}">N/A</span>
                 </p>
                 <p><strong>Status:</strong> <span th:text="${account.status}">N/A</span></p>
-                <!-- Check dates before formatting -->
                 <p><strong>Opened On:</strong>
                     <span th:if="${account.createdAt != null}" th:text="${#temporals.format(account.createdAt, 'yyyy-MM-dd')}">N/A</span>
                     <span th:unless="${account.createdAt != null}">N/A</span>
@@ -41,12 +37,10 @@
         </div>
 
         <h2>Recent Transactions</h2>
-        <!-- Check if transactions list exists -->
         <div th:if="${transactions == null or #lists.isEmpty(transactions)}" class="alert alert-info">
             No transactions found for this account.
         </div>
 
-        <!-- Only show table if transactions list is not null and not empty -->
         <table class="table table-striped" th:if="${transactions != null and not #lists.isEmpty(transactions)}">
             <thead>
             <tr>
@@ -57,9 +51,7 @@
             </tr>
             </thead>
             <tbody>
-            <!-- Loop through transactions -->
             <tr th:each="tx : ${transactions}">
-                <!-- Check transaction properties before accessing/formatting -->
                 <td><span th:if="${tx?.timestamp != null}" th:text="${#temporals.format(tx.timestamp, 'yyyy-MM-dd HH:mm:ss')}">N/A</span></td>
                 <td><span th:text="${tx?.transactionType}">N/A</span></td>
                 <td>
@@ -73,7 +65,7 @@
             </tr>
             </tbody>
         </table>
-    </div> <!-- End of th:unless account == null -->
+    </div>
 
     <a th:href="@{/customer/dashboard}" class="btn btn-secondary mt-3">Back to Dashboard</a>
 </div>

@@ -31,7 +31,6 @@ public class FixedDepositServiceImpl implements FixedDepositService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found: " + customerId));
 
-        // Crucial Check: Only active customers can apply
         if (!customer.isActive()) {
             throw new UnauthorizedOperationException("Customer account is not active. Cannot apply for Fixed Deposit.");
         }
@@ -42,11 +41,9 @@ public class FixedDepositServiceImpl implements FixedDepositService {
         FixedDeposit fd = new FixedDeposit();
         fd.setCustomer(customer);
         fd.setPrincipalAmount(amount);
-        fd.setInterestRate(interestRate); // Rate might be determined by rules/term
+        fd.setInterestRate(interestRate);
         fd.setTermMonths(termMonths);
-        fd.setStatus(RequestStatus.PENDING); // Requires manager approval
-        // requestedAt is set automatically
-        // maturityDate is set upon approval
+        fd.setStatus(RequestStatus.PENDING);
 
         FixedDeposit savedFd = fixedDepositRepository.save(fd);
         return fdMapper.toDto(savedFd);

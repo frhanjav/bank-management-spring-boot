@@ -39,7 +39,7 @@ public class Account {
     private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approved_by_manager_id") // Manager who approved
+    @JoinColumn(name = "approved_by_manager_id")
     private Manager approvedBy;
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
